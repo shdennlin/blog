@@ -1,0 +1,78 @@
+#+STARTUP: content
+#+OPTIONS: \n:t
+
+#+HUGO_BASE_DIR: ~/shdennlin-wiki/blog.shdennlin.com
+#+HUGO_SECTION: /post/install-gui-in-wsl2-using-vcxsrv/
+#+EXPORT_FILE_NAME: index
+
+#+AUTHOR:	Shawn Dennis Lin
+#+TITLE: Install GUI in WSL2 using VcXsrv
+#+DATE:	[2021-08-11 Wed]
+#+HUGO_AUTO_SET_LASTMOD: t
+#+hugo_custom_front_matter: :description 
+#+hugo_custom_front_matter: :math false
+#+hugo_custom_front_matter: :slug install-gui-in-wsl2-using-vcxsrv
+#+hugo_custom_front_matter: :image vcxsrv-init-screen.jpg
+#+HUGO_CATEGORIES: Linux
+#+HUGO_TAGS: wsl vcxsrv gui linux
+
+Introduction how to install GUI desktop in WSL2 with VcSxrv in winsows 10.
+
+*** Install Step
+**** Install WSL
+First check if you Windows 10 Version supports WSL 2 or not checkout the [[https://docs.microsoft.com/en-us/windows/wsl/install-win10][Link]] and Install.
+
+**** Download VcSxrv
+Download X server connected tool, I use [[https://sourceforge.net/projects/vcxsrv/][VcXsrv]].
+
+**** Update Ubuntu 20.04 to the latest version
+#+begin_src shell
+$ sudo apt-get update
+$ sudo apt-get upgrade
+#+end_src
+
+**** x-server VcXsrv configuration
+Open the Ubuntu 20.04 LTS terminal and type below to install XFCE4 Desktop:
+#+begin_src shell
+$ sudo apt-get install x11-apps
+$ sudo apt-get install xfce4
+#+end_src
+
+When you install xfce4, you maybe need to select the Default Display Manager link this:
+[[./change-the-default-display-manager.png]]
+If you don't how to select, you can reference [[https://unix.stackexchange.com/questions/131496/what-is-lightdm-and-gdm/131497#131497?newreg=7caa2cd48b7b447f8b612ca8a7a13c5a][What is LightDM and GDM]].
+
+
+After the installation finished, open .bashrc add some configuration.
+#+begin_src shell
+$ cd ~
+$ vi .bashrc
+#+end_src
+
+Go to the last line and write this
+#+begin_src bash
+# For WSL2
+export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0.0
+export LIBGL_ALWAYS_INDIRECT=1
+#+end_src
+and Exit your WSL and run it again.
+
+Now after we got everything we need, let's start the session
+#+begin_src shell
+$ startxfce4
+#+end_src
+and go back you windows to open VcXsrv main program(XLaunch) you can use you GUI in WSL
+[[./vcxsrv-init-screen.jpg]]
+
+Congratulations!! Now you can use your WSL using Graphical User Interface.
+
+*** Reference
+- [[https://askubuntu.com/questions/993225/whats-the-easiest-way-to-run-gui-apps-on-windows-subsystem-for-linux-as-of-2018][What's the easiest way to run GUI apps on Windows Subsystem for Linux as of 2018?]]
+- [[https://s123600g.medium.com/window10-%E5%BB%BA%E7%BD%AEubuntu-wsl2-%E8%88%87gui%E6%A1%8C%E9%9D%A2%E9%85%8D%E7%BD%AE%E7%AD%86%E8%A8%98-58796915ed4d][Window10 建置Ubuntu(WSL2)與GUI桌面配置筆記]]
+- [[https://medium.com/@dhanar.santika/installing-wsl-with-gui-using-vcxsrv-6f307e96fac0][Installing WSL with GUI using VcXsrv]]
+- [[https://derkoe.dev/blog/development-environment-in-wsl2/][Development Environment in WSL2]]
+- [[http://ubuntuhandbook.org/index.php/2020/07/change-default-display-manager-ubuntu-20-04/][How to Change the Default Display Manager in Ubuntu 20.04]]
+- [[https://unix.stackexchange.com/questions/131496/what-is-lightdm-and-gdm/131497#131497][What is LightDM and GDM]]
+
+
+
