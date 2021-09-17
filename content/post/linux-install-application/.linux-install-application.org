@@ -5,8 +5,9 @@
 #+HUGO_SECTION: /post/linux-install-application/
 #+EXPORT_FILE_NAME: index
 
-#+AUTHOR:	Shawn Dennis Lin
 #+TITLE:	My Install Application in Ubuntu
+#+AUTHOR:	Shawn Dennis Lin
+#+EMAIL: ShawnDennisLin@gmail.com
 #+DATE:	[2021-08-11 Wed]
 #+HUGO_AUTO_SET_LASTMOD: t
 #+hugo_custom_front_matter: :description

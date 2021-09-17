@@ -8,7 +8,7 @@ title: "Shdennlin's Blog"
 disqusShortname: shdennlin
 
 # GA Tracking ID
-googleAnalytics:
+googleAnalytics: G-B7L7JWDJE7
 
 # Theme i18n support
 # Available values: en, fr, id, ja, ko, pt-br, zh-cn, es, de, nl, it
@@ -163,3 +163,8 @@ markup:
         startLevel: 2
     highlight:
         noClasses: false
+
+sitemap:
+  changefreq: monthly
+  filename: sitemap.xml
+  priority: 0.5
