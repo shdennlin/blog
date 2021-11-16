@@ -2,7 +2,7 @@
 title = "My Install Application in Ubuntu"
 author = ["Shawn Dennis Lin"]
 date = 2021-08-11T00:00:00+08:00
-lastmod = 2021-08-12T18:36:02+08:00
+lastmod = 2021-11-16T13:47:18+08:00
 tags = ["linux", "ubuntu"]
 categories = ["Linux"]
 draft = false
@@ -547,8 +547,6 @@ Spacemacs is currently in beta, and contributions are very welcome.
 ``````shell
 git clone https://github.com/syl20bnr/spacemacs.git ~/.emacs.d --depth 1 &&\
 git clone https://github.com/shdennlin/spacemacs-private.git ~/.spacemacs.d
-# fzf layer
-git clone git@github.com:ashyisme/fzf-spacemacs-layer.git ~/.emacs.d/private/fzf
 ``````
 
 -   GitHub(spacemacs): <https://github.com/syl20bnr/spacemacs>
@@ -556,6 +554,16 @@ git clone git@github.com:ashyisme/fzf-spacemacs-layer.git ~/.emacs.d/private/fzf
 -   GitHub(fzf layer): <https://github.com/AshyIsMe/fzf-spacemacs-layer>
 -   Ref: <https://develop.spacemacs.org/>
 
+If you install Anaconda and use python, you can install package below  
+
+``````sh
+conda install pip
+pip uninstall spyder
+pip install --upgrade "jedi>=0.13.0" "json-rpc>=1.8.1" "service_factory>=0.1.5"
+pip install flake8 autoflake importmagic epc
+``````
+
+Ref: [Spacemacs-Python layer](https://develop.spacemacs.org/layers/+lang/python/README.html)  
 <span class="timestamp-wrapper"><span class="timestamp">&lt;2021-03-19 Fri&gt;</span></span>  
 
 

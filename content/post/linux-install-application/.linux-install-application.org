@@ -1,7 +1,7 @@
 #+STARTUP: content
 #+OPTIONS: \n:t
 
-#+HUGO_BASE_DIR: ~/shdennlin-wiki/blog.shdennlin.com
+#+HUGO_BASE_DIR: ~/shdennlin-wiki/website/blog.shdennlin.com
 #+HUGO_SECTION: /post/linux-install-application/
 #+EXPORT_FILE_NAME: index
 
@@ -445,14 +445,20 @@ Spacemacs is currently in beta, and contributions are very welcome.
 #+BEGIN_SRC shell
 git clone https://github.com/syl20bnr/spacemacs.git ~/.emacs.d --depth 1 &&\
 git clone https://github.com/shdennlin/spacemacs-private.git ~/.spacemacs.d
-# fzf layer
-git clone git@github.com:ashyisme/fzf-spacemacs-layer.git ~/.emacs.d/private/fzf
 #+END_SRC
 + GitHub(spacemacs): https://github.com/syl20bnr/spacemacs
 + GitHub(my spacemacs config): https://github.com/shdennlin/spacemacs-private
 + GitHub(fzf layer): https://github.com/AshyIsMe/fzf-spacemacs-layer
 + Ref: https://develop.spacemacs.org/
 
+If you install Anaconda and use python, you can install package below
+#+begin_src sh
+conda install pip
+pip uninstall spyder
+pip install --upgrade "jedi>=0.13.0" "json-rpc>=1.8.1" "service_factory>=0.1.5"
+pip install flake8 autoflake importmagic epc
+#+end_src
+Ref: [[https://develop.spacemacs.org/layers/+lang/python/README.html][Spacemacs-Python layer]]
 <2021-03-19 Fri>
 
 ** typora
