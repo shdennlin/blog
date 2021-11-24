@@ -435,7 +435,7 @@ sudo ln -s lib/* lib2
 &lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-sh" data-lang="sh">conda install pip
 pip uninstall spyder
 pip install --upgrade &lt;span class="s2">&amp;#34;jedi&amp;gt;=0.13.0&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;json-rpc&amp;gt;=1.8.1&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;service_factory&amp;gt;=0.1.5&amp;#34;&lt;/span>
-pip install flake8 autoflake importmagic epc
+pip install flake8 autoflake importmagic epc yapf
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>Ref: &lt;a class="link" href="https://develop.spacemacs.org/layers/&amp;#43;lang/python/README.html" target="_blank" rel="noopener"
 >Spacemacs-Python layer&lt;/a>&lt;br>
 &lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&amp;lt;2021-03-19 Fri&amp;gt;&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
