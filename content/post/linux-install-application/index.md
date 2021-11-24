@@ -2,7 +2,7 @@
 title = "My Install Application in Ubuntu"
 author = ["Shawn Dennis Lin"]
 date = 2021-08-11T00:00:00+08:00
-lastmod = 2021-11-16T13:47:18+08:00
+lastmod = 2021-11-24T13:02:39+08:00
 tags = ["linux", "ubuntu"]
 categories = ["Linux"]
 draft = false
@@ -560,7 +560,7 @@ If you install Anaconda and use python, you can install package below
 conda install pip
 pip uninstall spyder
 pip install --upgrade "jedi>=0.13.0" "json-rpc>=1.8.1" "service_factory>=0.1.5"
-pip install flake8 autoflake importmagic epc
+pip install flake8 autoflake importmagic epc yapf
 ``````
 
 Ref: [Spacemacs-Python layer](https://develop.spacemacs.org/layers/+lang/python/README.html)  

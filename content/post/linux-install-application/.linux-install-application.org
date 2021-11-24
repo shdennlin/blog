@@ -456,7 +456,7 @@ If you install Anaconda and use python, you can install package below
 conda install pip
 pip uninstall spyder
 pip install --upgrade "jedi>=0.13.0" "json-rpc>=1.8.1" "service_factory>=0.1.5"
-pip install flake8 autoflake importmagic epc
+pip install flake8 autoflake importmagic epc yapf
 #+end_src
 Ref: [[https://develop.spacemacs.org/layers/+lang/python/README.html][Spacemacs-Python layer]]
 <2021-03-19 Fri>
