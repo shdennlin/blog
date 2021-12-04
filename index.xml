@@ -1046,7 +1046,11 @@ sensors
 &lt;/code>&lt;/pre>&lt;/div>&lt;ul>
 &lt;li>Ref: &lt;a href="https://codeburst.io/how-to-install-and-use-snap-on-ubuntu-18-04-9fcb6e3b34f9">https://codeburst.io/how-to-install-and-use-snap-on-ubuntu-18-04-9fcb6e3b34f9&lt;/a>&lt;/li>
 &lt;/ul>
-&lt;p>&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&amp;lt;2021-03-28 Sun&amp;gt;&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
+&lt;h4 id="notification">Notification&lt;/h4>
+&lt;p>ex: turn off spotify notification&lt;br>
+edit &lt;code>~/snap/spotify/current/.config/spotify/Users/[Some user hash]-user/prefs&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-sh" data-lang="sh">ui.track_notifications_enabled&lt;span class="o">=&lt;/span>&lt;span class="nb">false&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&amp;lt;2021-03-28 Sun&amp;gt;&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
 &lt;h3 id="terminator">Terminator&lt;/h3>
 &lt;p>Originally created and developed for a long time by Chris Jones, the goal of this project is to produce a useful tool for arranging terminals. It is inspired by programs such as gnome-multi-term, quadkonsole, etc. in that the main focus is arranging terminals in grids (tabs is the most common default method, which Terminator also supports).&lt;/p>
 &lt;p>Much of the behaviour of Terminator is based on GNOME Terminal, and we are adding more features from that as time goes by, but we also want to extend out in different directions with useful features for sysadmins and other users. If you have any suggestions, please file wishlist bugs! (see below for the address)&lt;/p>
