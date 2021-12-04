@@ -1208,6 +1208,14 @@ sudo apt install snapd
 
 + Ref: https://codeburst.io/how-to-install-and-use-snap-on-ubuntu-18-04-9fcb6e3b34f9
 
+*** Notification
+ex: turn off spotify notification
+edit =~/snap/spotify/current/.config/spotify/Users/[Some user hash]-user/prefs=
+#+begin_src sh
+ui.track_notifications_enabled=false
+#+end_src
+
+
 <2021-03-28 Sun>
 
 ** Terminator

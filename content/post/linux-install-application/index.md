@@ -2,7 +2,7 @@
 title = "My Install Application in Ubuntu"
 author = ["Shawn Dennis Lin"]
 date = 2021-08-11T00:00:00+08:00
-lastmod = 2021-11-24T13:02:39+08:00
+lastmod = 2021-12-04T14:39:58+08:00
 tags = ["linux", "ubuntu"]
 categories = ["Linux"]
 draft = false
@@ -1500,6 +1500,16 @@ sudo apt install snapd
 ``````
 
 -   Ref: <https://codeburst.io/how-to-install-and-use-snap-on-ubuntu-18-04-9fcb6e3b34f9>
+
+
+#### Notification {#notification}
+
+ex: turn off spotify notification  
+edit `~/snap/spotify/current/.config/spotify/Users/[Some user hash]-user/prefs`  
+
+``````sh
+ui.track_notifications_enabled=false
+``````
 
 <span class="timestamp-wrapper"><span class="timestamp">&lt;2021-03-28 Sun&gt;</span></span>  
 
