@@ -1,8 +1,6 @@
 #+STARTUP: content
 #+OPTIONS: \n:t
 
-#+HUGO_BASE_DIR: ~/shdennlin-wiki/website/blog.shdennlin.com
-#+HUGO_SECTION: /post/linux-install-application/
 #+EXPORT_FILE_NAME: index
 
 #+TITLE:	My Install Application in Ubuntu
@@ -456,7 +454,7 @@ If you install Anaconda and use python, you can install package below
 conda install pip
 pip uninstall spyder
 pip install --upgrade "jedi>=0.13.0" "json-rpc>=1.8.1" "service_factory>=0.1.5"
-pip install flake8 autoflake importmagic epc yapf
+pip install flake8 autoflake importmagic epc yapf isort
 #+end_src
 Ref: [[https://develop.spacemacs.org/layers/+lang/python/README.html][Spacemacs-Python layer]]
 <2021-03-19 Fri>
@@ -501,26 +499,6 @@ sudo apt-get install -y libgl1-mesa-glx libegl1-mesa libxrandr2 libxrandr2 libxs
 cd ~/Downloads
 wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
 sh ~/Downloads/Anaconda3-2020.11-Linux-x86_64.sh
-
-
-## For Spacemacs
-# for import sorting
-pip install pyls-isort
-# for mypy checking (python 3.4+ is needed)
-pip install pyls-mypy
-pip install pyls-black
-# Syntax checking uses flake8 package: 
-pip install flake8
-# To be able to suppress unused imports easily
-pip install autoflake
-# To use dap-mode for debugging do: 
-pip install "ptvsd>=4.2"
-pip install importmagic epc
-# anaconda company-jedi upgrade 
-pip install jedi --upgrade
-
-# echo "export PYTHONPATH=/home/$(whoami)/anaconda3/bin/" >> ~/.bashrc
-
 
 conda create -n tf-gpu tensorflow-gpu
 conda activate tf-gpu
@@ -845,6 +823,27 @@ sudo apt-get install memcached
 <2021-03-26 Fri>
 
 * Life Tool
+** AutoKey
+AutoKey, a desktop automation utility for Linux and X11.
+#+begin_src sh
+# Needed for both GUIs:
+sudo apt install python3-dbus python3-xlib python3-pyinotify wmctrl
+# Needed for autokey-gtk:
+sudo apt install python3-gi gir1.2-gtk-3.0 gir1.2-gtksource-3.0 gir1.2-appindicator3-0.1 gir1.2-glib-2.0 gir1.2-notify-0.7 zenity
+# Needed for autokey-qt:
+sudo apt install python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsvg kdialog
+# Recommended installation-time/build-time dependency, if installing using pip3 or prior to self-building Debian packages
+sudo apt install pyqt5-dev-tools
+
+
+pip install pyqt5 qscintilla
+# Install AutoKey
+sudo apt install autokey-qt
+#+end_src
++ GitHub: https://github.com/autokey/autokey
+
+<2021-12-11 Sat>
+
 ** BingWall - Bing wallpaper of the day
 Bing wallpaper of the day application for Gnome desktop.
 #+BEGIN_SRC shell
@@ -1083,6 +1082,14 @@ sudo apt install -y bat
  
 <2021-04-17 Sat>
   
+** Fasd
+Command-line productivity booster, offers quick access to files and directories, inspired by autojump, z and v. 
+#+begin_src sh
+sudo apt-get install fasd
+#+end_src
++ GitHub: https://github.com/clvv/fasd/wiki/Installing-via-Package-Managers
+
+<2021-12-11 Sat>
 ** fd & ag
 *fd*
 fd is a program to find entries in your filesytem. It is a simple, fast and user-friendly alternative to find. While it does not aim to support all of find's powerful functionality, it provides sensible (opinionated) defaults for a majority of use cases.

@@ -2,7 +2,7 @@
 title = "My Install Application in Ubuntu"
 author = ["Shawn Dennis Lin"]
 date = 2021-08-11T00:00:00+08:00
-lastmod = 2021-12-04T14:39:58+08:00
+lastmod = 2021-12-11T16:00:19+08:00
 tags = ["linux", "ubuntu"]
 categories = ["Linux"]
 draft = false
@@ -1033,6 +1033,29 @@ sudo apt-get install memcached
 ## Life Tool {#life-tool}
 
 
+### AutoKey {#autokey}
+
+AutoKey, a desktop automation utility for Linux and X11.  
+
+``````sh
+# Needed for both GUIs:
+sudo apt install python3-dbus python3-xlib python3-pyinotify wmctrl
+# Needed for autokey-gtk:
+sudo apt install python3-gi gir1.2-gtk-3.0 gir1.2-gtksource-3.0 gir1.2-appindicator3-0.1 gir1.2-glib-2.0 gir1.2-notify-0.7 zenity
+# Needed for autokey-qt:
+sudo apt install python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsvg kdialog
+# Recommended installation-time/build-time dependency, if installing using pip3 or prior to self-building Debian packages
+sudo apt install pyqt5-dev-tools
+
+# Install AutoKey
+pip3 install --user git+https://github.com/autokey/autokey
+``````
+
+-   GitHub: <https://github.com/autokey/autokey>
+
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2021-12-11 Sat&gt;</span></span>  
+
+
 ### BingWall - Bing wallpaper of the day {#bingwall-bing-wallpaper-of-the-day}
 
 Bing wallpaper of the day application for Gnome desktop.  
@@ -1336,6 +1359,19 @@ sudo apt install -y bat
 -   GitHub: <https://github.com/sharkdp/bat>
 
 <span class="timestamp-wrapper"><span class="timestamp">&lt;2021-04-17 Sat&gt;</span></span>  
+
+
+### Fasd {#fasd}
+
+Command-line productivity booster, offers quick access to files and directories, inspired by autojump, z and v.  
+
+``````sh
+sudo apt-get install fasd
+``````
+
+-   GitHub: <https://github.com/clvv/fasd/wiki/Installing-via-Package-Managers>
+
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2021-12-11 Sat&gt;</span></span>  
 
 
 ### fd & ag {#fd-and-ag}
