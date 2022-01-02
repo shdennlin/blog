@@ -750,6 +750,22 @@ sudo apt-get install memcached
 &lt;/ul>
 &lt;p>&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&amp;lt;2021-03-26 Fri&amp;gt;&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
 &lt;h2 id="life-tool">Life Tool&lt;/h2>
+&lt;h3 id="autokey">AutoKey&lt;/h3>
+&lt;p>AutoKey, a desktop automation utility for Linux and X11.&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="c1"># Needed for both GUIs:&lt;/span>
+sudo apt install python3-dbus python3-xlib python3-pyinotify wmctrl
+&lt;span class="c1"># Needed for autokey-gtk:&lt;/span>
+sudo apt install python3-gi gir1.2-gtk-3.0 gir1.2-gtksource-3.0 gir1.2-appindicator3-0.1 gir1.2-glib-2.0 gir1.2-notify-0.7 zenity
+&lt;span class="c1"># Needed for autokey-qt:&lt;/span>
+sudo apt install python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsvg kdialog
+&lt;span class="c1"># Recommended installation-time/build-time dependency, if installing using pip3 or prior to self-building Debian packages&lt;/span>
+sudo apt install pyqt5-dev-tools
+&lt;span class="c1"># Install AutoKey&lt;/span>
+pip3 install --user git+https://github.com/autokey/autokey
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>GitHub: &lt;a href="https://github.com/autokey/autokey">https://github.com/autokey/autokey&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&amp;lt;2021-12-11 Sat&amp;gt;&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
 &lt;h3 id="bingwall-bing-wallpaper-of-the-day">BingWall - Bing wallpaper of the day&lt;/h3>
 &lt;p>Bing wallpaper of the day application for Gnome desktop.&lt;/p>
 &lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">sudo snap install bing-wall
@@ -948,6 +964,13 @@ A code searching tool similar to ack, with a focus on speed.&lt;/p>
 &lt;li>GitHub: &lt;a href="https://github.com/sharkdp/bat">https://github.com/sharkdp/bat&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;p>&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&amp;lt;2021-04-17 Sat&amp;gt;&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
+&lt;h3 id="fasd">Fasd&lt;/h3>
+&lt;p>Command-line productivity booster, offers quick access to files and directories, inspired by autojump, z and v.&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-sh" data-lang="sh">sudo apt-get install fasd
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>GitHub: &lt;a href="https://github.com/clvv/fasd/wiki/Installing-via-Package-Managers">https://github.com/clvv/fasd/wiki/Installing-via-Package-Managers&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&amp;lt;2021-12-11 Sat&amp;gt;&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
 &lt;h3 id="fd-and-ag">fd &amp;amp; ag&lt;/h3>
 &lt;p>&lt;strong>fd&lt;/strong>&lt;br>
 fd is a program to find entries in your filesytem. It is a simple, fast and user-friendly alternative to find. While it does not aim to support all of find&amp;rsquo;s powerful functionality, it provides sensible (opinionated) defaults for a majority of use cases.&lt;/p>
