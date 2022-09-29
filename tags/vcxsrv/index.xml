@@ -1,4 +1,91 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>vcxsrv on Shdennlin's Blog</title><link>https://blog.shdennlin.com/tags/vcxsrv/</link><description>Recent content in vcxsrv on Shdennlin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-tw</language><lastBuildDate>Wed, 11 Aug 2021 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.shdennlin.com/tags/vcxsrv/index.xml" rel="self" type="application/rss+xml"/><item><title>Install GUI in WSL2 using VcXsrv</title><link>https://blog.shdennlin.com/p/install-gui-in-wsl2-using-vcxsrv/</link><pubDate>Wed, 11 Aug 2021 00:00:00 +0800</pubDate><guid>https://blog.shdennlin.com/p/install-gui-in-wsl2-using-vcxsrv/</guid><description>Introduction how to install GUI desktop in WSL2 with VcSxrv in winsows 10.
-Install Step Install WSL First check if you Windows 10 Version supports WSL 2 or not checkout the Link and Install.
-Download VcSxrv Download X server connected tool, I use VcXsrv.
-Update Ubuntu 20.04 to the latest version $ sudo apt-get update $ sudo apt-get upgrade x-server VcXsrv configuration Open the Ubuntu 20.04 LTS terminal and type below to install XFCE4 Desktop:</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>vcxsrv on Shdennlin's Blog</title><link>https://blog.shdennlin.com/tags/vcxsrv/</link><description>Recent content in vcxsrv on Shdennlin's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 11 Aug 2021 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.shdennlin.com/tags/vcxsrv/index.xml" rel="self" type="application/rss+xml"/><item><title>Install GUI in WSL2 using VcXsrv</title><link>https://blog.shdennlin.com/p/install-gui-in-wsl2-using-vcxsrv/</link><pubDate>Wed, 11 Aug 2021 00:00:00 +0800</pubDate><guid>https://blog.shdennlin.com/p/install-gui-in-wsl2-using-vcxsrv/</guid><description>&lt;img src="https://blog.shdennlin.com/p/install-gui-in-wsl2-using-vcxsrv/vcxsrv-init-screen.jpg" alt="Featured image of post Install GUI in WSL2 using VcXsrv" />&lt;p>Introduction how to install GUI desktop in WSL2 with VcSxrv in winsows 10.&lt;/p>
+&lt;h2 id="install-step">Install Step&lt;/h2>
+&lt;h3 id="install-wsl">Install WSL&lt;/h3>
+&lt;p>First check if you Windows 10 Version supports WSL 2 or not checkout the &lt;a class="link" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10" target="_blank" rel="noopener"
+>Link&lt;/a> and Install.&lt;/p>
+&lt;h3 id="download-vcsxrv">Download VcSxrv&lt;/h3>
+&lt;p>Download X server connected tool, I use &lt;a class="link" href="https://sourceforge.net/projects/vcxsrv/" target="_blank" rel="noopener"
+>VcXsrv&lt;/a>.&lt;/p>
+&lt;h3 id="update-ubuntu-20-dot-04-to-the-latest-version">Update Ubuntu 20.04 to the latest version&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">$ sudo apt-get update
+$ sudo apt-get upgrade
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="x-server-vcxsrv-configuration">x-server VcXsrv configuration&lt;/h3>
+&lt;p>Open the Ubuntu 20.04 LTS terminal and type below to install XFCE4 Desktop:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">$ sudo apt-get install x11-apps
+$ sudo apt-get install xfce4
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>When you install xfce4, you maybe need to select the Default Display Manager link this:&lt;br>
+&lt;img src="https://blog.shdennlin.com/ox-hugo/change-the-default-display-manager.png"
+loading="lazy"
+>&lt;br>
+If you don&amp;rsquo;t how to select, you can reference &lt;a class="link" href="https://unix.stackexchange.com/questions/131496/what-is-lightdm-and-gdm/131497#131497?newreg=7caa2cd48b7b447f8b612ca8a7a13c5a" target="_blank" rel="noopener"
+>What is LightDM and GDM&lt;/a>.&lt;/p>
+&lt;p>After the installation finished, open .bashrc add some configuration.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">$ &lt;span class="nb">cd&lt;/span> ~
+$ vi .bashrc
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Go to the last line and write this&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="c1"># For WSL2&lt;/span>
+&lt;span class="nb">export&lt;/span> &lt;span class="nv">DISPLAY&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">$(&lt;/span>cat /etc/resolv.conf &lt;span class="p">|&lt;/span> grep nameserver &lt;span class="p">|&lt;/span> awk &lt;span class="s1">&amp;#39;{print $2}&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span>:0.0
+&lt;span class="nb">export&lt;/span> &lt;span class="nv">LIBGL_ALWAYS_INDIRECT&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="m">1&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>and Exit your WSL and run it again.&lt;/p>
+&lt;p>Now after we got everything we need, let&amp;rsquo;s start the session&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">$ startxfce4
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>and go back you windows to open VcXsrv main program(XLaunch) you can use you GUI in WSL&lt;br>
+&lt;img src="https://blog.shdennlin.com/ox-hugo/vcxsrv-init-screen.jpg"
+loading="lazy"
+>&lt;/p>
+&lt;p>Congratulations!! Now you can use your WSL using Graphical User Interface.&lt;/p>
+&lt;h2 id="reference">Reference&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://askubuntu.com/questions/993225/whats-the-easiest-way-to-run-gui-apps-on-windows-subsystem-for-linux-as-of-2018" target="_blank" rel="noopener"
+>What&amp;rsquo;s the easiest way to run GUI apps on Windows Subsystem for Linux as of 2018?&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://s123600g.medium.com/window10-%E5%BB%BA%E7%BD%AEubuntu-wsl2-%E8%88%87gui%E6%A1%8C%E9%9D%A2%E9%85%8D%E7%BD%AE%E7%AD%86%E8%A8%98-58796915ed4d" target="_blank" rel="noopener"
+>Window10 建置Ubuntu(WSL2)與GUI桌面配置筆記&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://medium.com/@dhanar.santika/installing-wsl-with-gui-using-vcxsrv-6f307e96fac0" target="_blank" rel="noopener"
+>Installing WSL with GUI using VcXsrv&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://derkoe.dev/blog/development-environment-in-wsl2/" target="_blank" rel="noopener"
+>Development Environment in WSL2&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="http://ubuntuhandbook.org/index.php/2020/07/change-default-display-manager-ubuntu-20-04/" target="_blank" rel="noopener"
+>How to Change the Default Display Manager in Ubuntu 20.04&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://unix.stackexchange.com/questions/131496/what-is-lightdm-and-gdm/131497#131497" target="_blank" rel="noopener"
+>What is LightDM and GDM&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>

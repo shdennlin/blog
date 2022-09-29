@@ -1,1 +1,35 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>spell-checking on Shdennlin's Blog</title><link>https://blog.shdennlin.com/tags/spell-checking/</link><description>Recent content in spell-checking on Shdennlin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-tw</language><lastBuildDate>Mon, 09 May 2022 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.shdennlin.com/tags/spell-checking/index.xml" rel="self" type="application/rss+xml"/><item><title>Spacemacs - Spell Checking Configuration in Windows</title><link>https://blog.shdennlin.com/p/spacemacs-spell-checking-in-windows/</link><pubDate>Mon, 09 May 2022 00:00:00 +0800</pubDate><guid>https://blog.shdennlin.com/p/spacemacs-spell-checking-in-windows/</guid><description>This post will introduce how to install Spell Checking on spacemacs in windows. I will use hunspell instead to flyspell on windows. Install Step In spacemacs init.el add spell-checking layer. Download the hunspell win32 binairy here, look for hunspell-1.3.2-3-w32-bin.zip (ex: ctrl+F hunspell) Unzip it, and copy to location (ex: d:\application\hunspell-1.3.2-3-w32-bin\bin\hunspell.exe) Add this to your init.el file dotspacemacs/user-config block: (setq-default ispell-program-name &amp;#34;d:/application/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe&amp;#34;) note that the \ have change into /.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>spell-checking on Shdennlin's Blog</title><link>https://blog.shdennlin.com/tags/spell-checking/</link><description>Recent content in spell-checking on Shdennlin's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 09 May 2022 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.shdennlin.com/tags/spell-checking/index.xml" rel="self" type="application/rss+xml"/><item><title>Spacemacs - Spell Checking Configuration in Windows</title><link>https://blog.shdennlin.com/p/spacemacs-spell-checking-in-windows/</link><pubDate>Mon, 09 May 2022 00:00:00 +0800</pubDate><guid>https://blog.shdennlin.com/p/spacemacs-spell-checking-in-windows/</guid><description>&lt;img src="https://blog.shdennlin.com/p/spacemacs-spell-checking-in-windows/image.jpeg" alt="Featured image of post Spacemacs - Spell Checking Configuration in Windows" />&lt;p>This post will introduce how to install &lt;strong>Spell Checking&lt;/strong> on &lt;a class="link" href="https://develop.spacemacs.org/" target="_blank" rel="noopener"
+>spacemacs&lt;/a> in windows. &lt;!-- raw HTML omitted -->&lt;/p>
+&lt;p>I will use &lt;a class="link" href="https://github.com/hunspell/hunspell" target="_blank" rel="noopener"
+>hunspell&lt;/a> instead to &lt;a class="link" href="https://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html" target="_blank" rel="noopener"
+>flyspell&lt;/a> on windows. &lt;!-- raw HTML omitted -->&lt;/p>
+&lt;h2 id="install-step">Install Step&lt;/h2>
+&lt;ol>
+&lt;li>
+&lt;p>In spacemacs init.el add &lt;code>spell-checking&lt;/code> layer. &lt;!-- raw HTML omitted -->&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Download the &lt;a class="link" href="https://sourceforge.net/projects/ezwinports/files/?source=navbar" target="_blank" rel="noopener"
+>hunspell win32 binairy here&lt;/a>, look for hunspell-1.3.2-3-w32-bin.zip (ex: ctrl+F hunspell) &lt;!-- raw HTML omitted -->&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Unzip it, and copy to location (ex: &lt;strong>d:\application\hunspell-1.3.2-3-w32-bin\bin\hunspell.exe&lt;/strong>) &lt;!-- raw HTML omitted -->&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Add this to your init.el file &lt;strong>dotspacemacs/user-config block&lt;/strong>: &lt;!-- raw HTML omitted -->&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-lisp" data-lang="lisp">&lt;span class="p">(&lt;/span>&lt;span class="nv">setq-default&lt;/span> &lt;span class="nv">ispell-program-name&lt;/span> &lt;span class="s">&amp;#34;d:/application/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>note that the &lt;strong>\&lt;/strong> have change into &lt;strong>/&lt;/strong>. &lt;!-- raw HTML omitted -->&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="ref">Ref&lt;/h2>
+&lt;ol>
+&lt;li>&lt;a class="link" href="https://emacs.stackexchange.com/a/57842" target="_blank" rel="noopener"
+>aspell with emacs 26.1 on ms windows&lt;/a> &lt;!-- raw HTML omitted -->&lt;/li>
+&lt;/ol></description></item></channel></rss>
