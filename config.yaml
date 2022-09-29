@@ -1,5 +1,5 @@
 baseurl: https://blog.shdennlin.com
-languageCode: zh-tw
+languageCode: en-us
 theme: hugo-theme-stack
 paginate: 5
 title: "Shdennlin's Blog"
@@ -23,7 +23,7 @@ params:
         - post
     featuredImageField: image
     rssFullContent: true
-    favicon: /favicon.png
+    icon: /favicon.png
 
     footer:
         since: 2021
@@ -40,6 +40,7 @@ params:
             enabled: true
             local: true
             src: images/author/shdennlin.png
+
     article:
         math: false
         toc: true
@@ -93,16 +94,19 @@ params:
             lang:
 
     widgets:
-        enabled:
-            - search
-            - archives
-            - tag-cloud
-
-        archives:
-            limit: 7
-
-        tagCloud:
-            limit: 20
+        homepage:
+            - type: search
+            - type: archives
+              params:
+                limit: 20
+            - type: categories
+              params:
+                limit: 20
+            - type: tag-cloud
+              params:
+                limit: 20
+        page:
+            - type: toc
 
     opengraph:
         twitter:
@@ -135,16 +139,44 @@ params:
 ### See https://docs.stack.jimmycai.com/configuration/custom-menu
 ### To remove about, archive and search page menu item, remove `menu` field from their FrontMatter
 menu:
-    main:
+    main: 
         - identifier: home
           name: Home
           url: /
           weight: -100
-          pre: home
           params:
             ### For demonstration purpose, the home link will be open in a new tab
-            newTab: true
+            newTab: false
+            icon: home
 
+    social:
+        - identifier: github
+          weight: -100
+          name: GitHub
+          url: https://github.com/shdennlin
+          params:
+              icon: brand-github
+
+        # - identifier: linkedin
+        #   weight: 0
+        #   name: Linkedin
+        #   url: https://www.linkedin.com/in/shawn-lin-1582b9201/
+        #   params:
+        #       icon: linkedin
+
+        # - identifier: wiki
+        #   weight: -50
+        #   name: Wiki
+        #   url: https://wiki.shdennlin.com
+        #   params:
+        #       icon: wikipedia
+
+        # - identifier: email
+        #   weight: 0
+        #   name: Email
+        #   url: mailto:ShawnDennisLin@gmail.com
+        #   params:
+        #       icon: email
 related:
     includeNewer: true
     threshold: 60
@@ -157,14 +189,25 @@ related:
           weight: 200
 
 markup:
+    goldmark:
+        renderer:
+            ## Set to true if you have HTML content inside Markdown
+            unsafe: false
     tableOfContents:
         endLevel: 4
         ordered: true
         startLevel: 2
     highlight:
         noClasses: false
+        codeFences: true
+        guessSyntax: true
+        lineNoStart: 1
+        lineNos: true
+        lineNumbersInTable: true
+        tabWidth: 4
 
 sitemap:
-  changefreq: monthly
+  changefreq: weekly
   filename: sitemap.xml
   priority: 0.5
+
