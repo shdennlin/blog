@@ -92,6 +92,11 @@ const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url
 <link href="/rss.xml" title="Blog" rel="alternate" type="application/rss+xml" />
 <link href="/atom.xml" title="Blog (Atom)" rel="alternate" type="application/atom+xml" />
 
+{/* IndieWeb identity — used by IndieAuth (webmention.io login, etc.).
+    Add more rel="me" entries as you accumulate accounts (mastodon,
+    bluesky, …). They must be reciprocal — GitHub profile must link back. */}
+<link href="https://github.com/shdennlin" rel="me" />
+
 {/* Webmentions */}
 {
 	WEBMENTION_URL && (
