@@ -7,6 +7,8 @@ tags: [meta]
 status: seedling
 lang: zh-TW
 translationKey: example-post
+created: 2026-05-01 20:21:30
+updated: 2026-05-02 01:44:19
 ---
 
 這個檔案 `publish: false`，所以正式環境永遠看不到，但 `bun run dev`

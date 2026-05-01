@@ -1,15 +1,76 @@
 ---
+import SocialList from "@/components/SocialList.astro";
 import PageLayout from "@/layouts/Base.astro";
 
 const meta = {
-	description: "About this site.",
+	description: "About Shawn Lin and this site.",
 	title: "About",
 };
 ---
 
 <PageLayout meta={meta}>
 	<h1 class="title mb-8">About</h1>
-	<div class="prose prose-sm max-w-none">
-		<p class="text-muted">Coming soon.</p>
+	<div class="prose prose-sm max-w-none" lang="en">
+		<p>
+			I am a full-stack engineer currently focused on full-stack development,
+			security, AI-assisted development, and agentic workflows.
+		</p>
+		<p>
+			I like exploring new tools and development practices, then bringing them
+			into real workflows. For me, the tool itself is not the point. What
+			matters is whether it helps us validate ideas faster, reduce repetitive
+			work, or make a vague problem easier to reason about.
+		</p>
+		<p>
+			AI tools have changed quickly over the past few years, and I have spent a
+			lot of time exploring how they can participate in development and testing:
+			from breaking down requirements, writing code, debugging, and organizing
+			documentation, to building agentic workflows that support security testing
+			and product iteration.
+		</p>
+		<p>
+			This site is my public notebook. I write about engineering work, tool
+			experiments, debugging stories, deployment notes, and thoughts from
+			adjusting how I work. It is not exactly a portfolio, and not exactly a
+			collection of polished essays. It is closer to a workbench that keeps
+			getting reorganized.
+		</p>
+		<p>
+			I enjoy exchanging ideas with people. If you are interested in
+			AI-assisted development, agentic systems, security testing, developer
+			tools, or personal knowledge management, feel free to
+			<a class="cactus-link" href="mailto:shawndennislin@gmail.com">email me</a>.
+		</p>
+	</div>
+
+	<hr class="my-10 border-border" />
+
+	<div class="prose prose-sm max-w-none" lang="zh-Hant">
+		<p>
+			我是一名全端工程師，最近關注的主題主要在全端開發、資安、AI-assisted
+			development，以及 Agentic workflow。
+		</p>
+		<p>
+			我喜歡研究新的工具和開發方式，然後把它們放進實際工作流裡。對我來說，工具本身不是重點，重點是它能不能幫助我們更快驗證想法、減少重複工作，或讓一個模糊的問題變得比較清楚。
+		</p>
+		<p>
+			這幾年 AI
+			工具變化很快，我花了很多時間探索它們可以怎麼參與開發與測試：從需求拆解、寫程式、除錯、整理文件，到建立一些能輔助資安測試與產品迭代的
+			Agentic workflow。
+		</p>
+		<p>
+			這個網站是我的公開筆記，會記錄工程實作、工具實驗、踩坑過程、部署經驗，以及我在調整工作方式時留下的想法。它不完全是作品集，也不完全是正式文章集，比較像是一個持續整理中的工作台。
+		</p>
+		<p>
+			我也很喜歡和人交流想法。如果你對 AI-assisted development、Agentic
+			systems、資安測試、開發者工具，或個人知識管理有興趣，歡迎<a
+				class="cactus-link"
+				href="mailto:shawndennislin@gmail.com">寄信給我</a
+			>。
+		</p>
+	</div>
+
+	<div class="mt-10">
+		<SocialList />
 	</div>
 </PageLayout>

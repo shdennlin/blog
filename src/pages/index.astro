@@ -29,7 +29,21 @@ const topTags = getUniqueTagsWithCount(articles).slice(0, 20);
 <PageLayout meta={{ title: "Home" }}>
 	<section>
 		<h1 class="title mb-6">{siteConfig.title}</h1>
-		<p class="mb-4">{siteConfig.description}</p>
+		<div class="mb-4 space-y-3">
+			<p>
+				I am a full-stack engineer exploring security, AI-assisted development,
+				and agentic workflows.
+			</p>
+			<p>
+				This is my public notebook for engineering notes, tool experiments,
+				debugging stories, and deployment lessons.
+				<a class="cactus-link" href="/about/">More about me</a>.
+			</p>
+			<p class="text-muted text-sm">
+				Subscribe via <a class="cactus-link" href="/rss.xml">RSS</a> or
+				<a class="cactus-link" href="/atom.xml">Atom</a>.
+			</p>
+		</div>
 		<SocialList />
 	</section>
 

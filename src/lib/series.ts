@@ -14,8 +14,8 @@ export interface SeriesNeighbors {
 	slug: string;
 	current: number; // 1-based
 	total: number;
-	prev?: { id: string; title: string } | undefined;
-	next?: { id: string; title: string } | undefined;
+	prev?: { id: string; title: string };
+	next?: { id: string; title: string };
 }
 
 export function seriesSlug(name: string): string {
@@ -63,12 +63,14 @@ export function getSeriesNeighbors(
 	if (!list) return undefined;
 	const idx = list.findIndex((p) => p.id === post.id);
 	if (idx < 0) return undefined;
+	const prev = list[idx - 1];
+	const next = list[idx + 1];
 	return {
 		name,
 		slug: seriesSlug(name),
 		current: idx + 1,
 		total: list.length,
-		prev: list[idx - 1] ? { id: list[idx - 1]!.id, title: list[idx - 1]!.data.title } : undefined,
-		next: list[idx + 1] ? { id: list[idx + 1]!.id, title: list[idx + 1]!.data.title } : undefined,
+		...(prev ? { prev: { id: prev.id, title: prev.data.title } } : {}),
+		...(next ? { next: { id: next.id, title: next.data.title } } : {}),
 	};
 }

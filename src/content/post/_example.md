@@ -7,6 +7,8 @@ tags: [meta]
 status: seedling
 lang: en
 translationKey: example-post
+created: 2026-05-01 20:21:30
+updated: 2026-05-02 01:44:38
 ---
 
 This file has `publish: false` so it never appears on the live site

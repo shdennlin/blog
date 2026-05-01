@@ -6,6 +6,8 @@ publish: false
 publishDate: {{date:YYYY-MM-DD}}
 tags: [decision]
 status: seedling
+created: 2026-05-01 20:21:30
+updated: 2026-05-02 04:17:03
 ---
 
 > **TL;DR:** State the decision in one sentence so a future reader (or future-you) knows the answer without reading further.

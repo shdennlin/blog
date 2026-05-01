@@ -10,6 +10,7 @@ import { buildGraph } from "./graph-data";
 export interface MiniNode {
 	id: string;
 	title: string;
+	type: "post" | "note" | "project" | "page";
 	x: number;
 	y: number;
 	isCenter: boolean;
@@ -25,6 +26,17 @@ export interface MiniEdge {
 const RADIUS = 70; // pixels from center
 const CENTER_X = 90;
 const CENTER_Y = 90;
+const URL_PREFIX: Record<MiniNode["type"], string> = {
+	post: "posts",
+	note: "notes",
+	project: "projects",
+	page: "",
+};
+
+export function pathForMiniNode(node: Pick<MiniNode, "id" | "type">): string {
+	const prefix = URL_PREFIX[node.type];
+	return prefix ? `/${prefix}/${node.id}/` : `/${node.id}/`;
+}
 
 export function buildMiniGraph(
 	centerId: string,
@@ -32,6 +44,7 @@ export function buildMiniGraph(
 ): { nodes: MiniNode[]; edges: MiniEdge[]; total: number } {
 	const full = buildGraph(posts);
 	const titleOf = new Map(full.nodes.map((n) => [n.id, n.title]));
+	const typeOf = new Map(full.nodes.map((n) => [n.id, n.type]));
 
 	// 1-hop neighbors of centerId
 	const neighborIds = new Set<string>();
@@ -47,6 +60,7 @@ export function buildMiniGraph(
 		nodes.push({
 			id: centerId,
 			title: titleOf.get(centerId) ?? centerId,
+			type: typeOf.get(centerId) ?? "post",
 			x: CENTER_X,
 			y: CENTER_Y,
 			isCenter: true,
@@ -58,6 +72,7 @@ export function buildMiniGraph(
 		nodes.push({
 			id,
 			title: titleOf.get(id) ?? id,
+			type: typeOf.get(id) ?? "post",
 			x: CENTER_X + RADIUS * Math.cos(angle),
 			y: CENTER_Y + RADIUS * Math.sin(angle),
 			isCenter: false,

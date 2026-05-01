@@ -48,7 +48,7 @@ export function getNeighbors(
 		type: (p.data.type ?? "post") as NeighborLink["type"],
 	});
 	return {
-		prev: prev ? toLink(prev) : undefined,
-		next: next ? toLink(next) : undefined,
+		...(prev ? { prev: toLink(prev) } : {}),
+		...(next ? { next: toLink(next) } : {}),
 	};
 }

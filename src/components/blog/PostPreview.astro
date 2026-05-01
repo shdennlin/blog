@@ -44,7 +44,7 @@ const showLangLabel = Boolean(post.data.lang && post.data.lang !== siteConfig.la
 {
 	withTags && post.data.tags.length > 0 && (
 		<ul class="flex flex-wrap gap-x-2 gap-y-1 text-xs sm:col-start-2">
-			{post.data.tags.map((tag) => (
+			{post.data.tags.map((tag: string) => (
 				<li>
 					<a
 						class="bg-accent/10 hover:bg-accent/20 text-muted hover:text-global-text inline-block rounded-full px-2 py-0.5"

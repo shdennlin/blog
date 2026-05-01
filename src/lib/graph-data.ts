@@ -9,12 +9,13 @@ import type { CollectionEntry } from "astro:content";
  */
 
 const WIKILINK_RE = /\[\[([^|#\]]+)(?:[#|][^\]]*)?\]\]/g;
-const POST_LINK_RE = /\]\(\/posts\/([a-z0-9][a-z0-9-]*)\/?\)/gi;
+const CONTENT_LINK_RE = /\]\(\/(?:posts|notes|projects)\/([a-z0-9][a-z0-9-]*)\/?\)/gi;
 
 export interface GraphNode {
 	id: string;
 	title: string;
 	tags: string[];
+	type: "post" | "note" | "project" | "page";
 }
 export interface GraphEdge {
 	source: string;
@@ -36,6 +37,7 @@ export function buildGraph(posts: CollectionEntry<"post">[]): GraphData {
 		id: p.id,
 		title: p.data.title,
 		tags: [...p.data.tags],
+		type: p.data.type ?? "post",
 	}));
 	const edgeSet = new Set<string>();
 	const edges: GraphEdge[] = [];
@@ -47,7 +49,7 @@ export function buildGraph(posts: CollectionEntry<"post">[]): GraphData {
 			const t = slugify(m[1] ?? "");
 			if (t && idSet.has(t) && t !== post.id) targets.add(t);
 		}
-		for (const m of body.matchAll(POST_LINK_RE)) {
+		for (const m of body.matchAll(CONTENT_LINK_RE)) {
 			const t = (m[1] ?? "").toLowerCase();
 			if (t && idSet.has(t) && t !== post.id) targets.add(t);
 		}

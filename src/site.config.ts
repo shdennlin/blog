@@ -29,9 +29,9 @@ export const menuLinks: { path: string; title: string }[] = [
 	{ path: "/", title: "Home" },
 	{ path: "/posts/", title: "Posts" },
 	{ path: "/projects/", title: "Projects" },
+	{ path: "/notes/", title: "Notes" },
 	{ path: "/tags/", title: "Tags" },
 	{ path: "/graph/", title: "Graph" },
-	{ path: "/notes/", title: "Notes" },
 	{ path: "/about/", title: "About" },
 ];
 

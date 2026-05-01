@@ -115,6 +115,7 @@ const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url
 	import.meta.env.PROD && import.meta.env.CF_BEACON_TOKEN && (
 		<script
 			defer
+			is:inline
 			src="https://static.cloudflareinsights.com/beacon.min.js"
 			data-cf-beacon={`{"token": "${import.meta.env.CF_BEACON_TOKEN}"}`}
 		/>

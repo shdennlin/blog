@@ -25,7 +25,14 @@ async function fetchWebmentions(timeFrom: string | null, perPage = 1000) {
 
 	if (timeFrom) url += `&since${timeFrom}`;
 
-	const res = await fetch(url);
+	let res: Response;
+	try {
+		res = await fetch(url);
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		console.warn(`Failed to fetch webmentions: ${message}`);
+		return null;
+	}
 
 	if (res.ok) {
 		const data = (await res.json()) as WebmentionsFeed;

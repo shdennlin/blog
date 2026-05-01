@@ -65,7 +65,9 @@ const { prev, next } = getNeighbors(post, allPosts);
 		</div>
 		<div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
 			<aside class="lg:order-2 lg:-me-32 lg:basis-64">
-				<MiniGraph centerId={post.id} posts={allPosts} />
+				<div class="hidden lg:block">
+					<MiniGraph centerId={post.id} posts={allPosts} />
+				</div>
 				{!!headings.length && <TOC headings={headings} />}
 			</aside>
 			<div
@@ -83,6 +85,9 @@ const { prev, next } = getNeighbors(post, allPosts);
 				<Backlinks links={backlinks} />
 				<WebMentions />
 				<Giscus />
+			</div>
+			<div class="lg:hidden">
+				<MiniGraph centerId={post.id} posts={allPosts} />
 			</div>
 		</div>
 	</article>
