@@ -1,0 +1,33 @@
+---
+import { type NeighborLink, pathFor } from "@/lib/post-neighbors";
+
+interface Props {
+	prev?: NeighborLink | undefined;
+	next?: NeighborLink | undefined;
+}
+
+const { prev, next } = Astro.props;
+---
+
+{
+	(prev || next) && (
+		<nav class="not-prose mt-12 flex flex-col gap-3 border-t border-special-lighter pt-8 sm:flex-row sm:justify-between">
+			{prev ? (
+				<a class="group flex flex-col text-sm" href={pathFor(prev)}>
+					<span class="text-muted text-xs">← Previous</span>
+					<span class="cactus-link group-hover:underline">{prev.title}</span>
+				</a>
+			) : (
+				<span />
+			)}
+			{next ? (
+				<a class="group flex flex-col text-sm sm:text-end" href={pathFor(next)}>
+					<span class="text-muted text-xs">Next →</span>
+					<span class="cactus-link group-hover:underline">{next.title}</span>
+				</a>
+			) : (
+				<span />
+			)}
+		</nav>
+	)
+}

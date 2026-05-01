@@ -1,0 +1,124 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostPreview from "@/components/blog/PostPreview.astro";
+import SocialList from "@/components/SocialList.astro";
+import { getArticles, getNotes, getProjects, getUniqueTagsWithCount } from "@/data/post";
+import PageLayout from "@/layouts/Base.astro";
+import { siteConfig } from "@/site.config";
+import { collectionDateSort } from "@/utils/date";
+
+const MAX_PER_SECTION = 5;
+
+const articles = (await getArticles()).sort(collectionDateSort) as CollectionEntry<"post">[];
+const notes = (await getNotes()).sort(collectionDateSort);
+const projects = (await getProjects()).sort(collectionDateSort);
+
+const latestPosts = articles.slice(0, MAX_PER_SECTION);
+const latestNotes = notes.slice(0, MAX_PER_SECTION);
+const latestProjects = projects.slice(0, MAX_PER_SECTION);
+
+const pinnedPosts = articles
+	.values()
+	.filter((p) => p.data.pinned)
+	.take(3)
+	.toArray();
+
+const topTags = getUniqueTagsWithCount(articles).slice(0, 20);
+---
+
+<PageLayout meta={{ title: "Home" }}>
+	<section>
+		<h1 class="title mb-6">{siteConfig.title}</h1>
+		<p class="mb-4">{siteConfig.description}</p>
+		<SocialList />
+	</section>
+
+	{
+		pinnedPosts.length > 0 && (
+			<section class="mt-16">
+				<h2 class="title mb-6 text-xl">Pinned</h2>
+				<ul class="space-y-4" role="list">
+					{pinnedPosts.map((p) => (
+						<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
+							<PostPreview post={p} withDesc withTags />
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	{
+		latestPosts.length > 0 && (
+			<section class="mt-16">
+				<h2 class="title text-accent mb-6 text-xl">
+					<a href="/posts/">Posts</a>
+				</h2>
+				<ul class="space-y-4" role="list">
+					{latestPosts.map((p) => (
+						<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
+							<PostPreview post={p} withDesc withTags />
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	{
+		latestProjects.length > 0 && (
+			<section class="mt-16">
+				<h2 class="title text-accent mb-6 text-xl">
+					<a href="/projects/">Projects</a>
+				</h2>
+				<ul class="space-y-4" role="list">
+					{latestProjects.map((p) => (
+						<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
+							<PostPreview post={p} withDesc withTags />
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	{
+		latestNotes.length > 0 && (
+			<section class="mt-16">
+				<h2 class="title text-accent mb-6 text-xl">
+					<a href="/notes/">Notes</a>
+				</h2>
+				<ul class="space-y-4" role="list">
+					{latestNotes.map((n) => (
+						<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
+							<PostPreview post={n} withDesc withTags />
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	{
+		topTags.length > 0 && (
+			<section class="mt-16">
+				<h2 class="title text-accent mb-6 text-xl">
+					<a href="/tags/">Tags</a>
+				</h2>
+				<ul class="flex flex-wrap gap-2" role="list">
+					{topTags.map(([tag, count]) => (
+						<li>
+							<a
+								class="bg-accent/10 hover:bg-accent/20 inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm"
+								href={`/tags/${tag}/`}
+							>
+								<span>#{tag}</span>
+								<span class="text-muted text-xs">{count}</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+</PageLayout>

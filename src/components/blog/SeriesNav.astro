@@ -1,0 +1,36 @@
+---
+import type { SeriesNeighbors } from "@/lib/series";
+
+interface Props {
+	neighbors: SeriesNeighbors;
+}
+
+const { neighbors } = Astro.props;
+---
+
+<aside class="not-prose bg-accent/5 border-accent/30 mb-8 rounded-lg border-l-4 px-4 py-3">
+	<p class="text-muted text-xs uppercase tracking-wide">
+		Part {neighbors.current} of {neighbors.total} in series
+	</p>
+	<p class="mt-1">
+		<a class="cactus-link font-semibold" href={`/series/${neighbors.slug}/`}>
+			{neighbors.name}
+		</a>
+	</p>
+	{
+		(neighbors.prev || neighbors.next) && (
+			<nav class="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm">
+				{neighbors.prev && (
+					<span>
+						← <a class="cactus-link" href={`/posts/${neighbors.prev.id}/`}>{neighbors.prev.title}</a>
+					</span>
+				)}
+				{neighbors.next && (
+					<span class="ms-auto">
+						<a class="cactus-link" href={`/posts/${neighbors.next.id}/`}>{neighbors.next.title}</a> →
+					</span>
+				)}
+			</nav>
+		)
+	}
+</aside>

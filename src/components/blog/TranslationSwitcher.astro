@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { langLabel, langOf } from "@/lib/i18n";
+
+interface Props {
+	others: CollectionEntry<"post">[];
+}
+
+const { others } = Astro.props;
+---
+
+{
+	others.length > 0 && (
+		<aside class="not-prose bg-special-lighter/40 mb-8 rounded-md px-4 py-3 text-sm">
+			<span class="text-muted">Also available in:</span>{" "}
+			{others.map((p, i) => (
+				<>
+					<a class="cactus-link" href={`/posts/${p.id}/`} hreflang={langOf(p)}>
+						{langLabel(langOf(p))}
+					</a>
+					{i < others.length - 1 ? <span class="text-muted"> · </span> : null}
+				</>
+			))}
+		</aside>
+	)
+}

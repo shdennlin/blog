@@ -1,0 +1,138 @@
+---
+import PageLayout from "@/layouts/Base.astro";
+
+const meta = {
+	description: "Interactive graph of post connections via wikilinks.",
+	title: "Graph",
+};
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-4">Graph</h1>
+	<p class="text-muted mb-6 text-sm">
+		Each node is a post. Edges are wikilink references. Click a node to open the post.
+		Drag to pan, scroll to zoom.
+	</p>
+	<div
+		id="graph-canvas"
+		class="border-special-lighter relative h-[70vh] w-full overflow-hidden rounded-lg border"
+	>
+		<svg id="graph-svg" class="absolute inset-0 h-full w-full"></svg>
+		<p id="graph-empty" class="text-muted absolute inset-0 hidden items-center justify-center">
+			Not enough posts yet — graph appears once two posts cross-link.
+		</p>
+	</div>
+</PageLayout>
+
+<script>
+	// @ts-nocheck — d3 is dynamically loaded from a CDN URL TS can't resolve.
+	import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+	type GraphNode = { id: string; title: string; tags: string[] };
+	type GraphEdge = { source: string; target: string };
+	type GraphData = { nodes: GraphNode[]; edges: GraphEdge[] };
+
+	const data: GraphData = await fetch("/graph.json").then((r) => r.json());
+
+	const svgEl = document.getElementById("graph-svg") as SVGSVGElement | null;
+	const emptyEl = document.getElementById("graph-empty");
+	const wrap = document.getElementById("graph-canvas");
+	if (!svgEl || !wrap) throw new Error("graph mount points missing");
+
+	if (data.nodes.length === 0) {
+		emptyEl?.classList.replace("hidden", "flex");
+	}
+
+	const rect = wrap.getBoundingClientRect();
+	const width = rect.width;
+	const height = rect.height;
+	const svg = d3.select(svgEl).attr("viewBox", `0 0 ${width} ${height}`);
+
+	const root = svg.append("g");
+	const linkSel = root
+		.append("g")
+		.attr("stroke", "currentColor")
+		.attr("stroke-opacity", 0.3)
+		.selectAll("line")
+		.data(data.edges)
+		.join("line")
+		.attr("stroke-width", 1);
+
+	const nodeSel = root
+		.append("g")
+		.selectAll("g")
+		.data(data.nodes)
+		.join("g")
+		.attr("class", "cursor-pointer")
+		.on("click", (_evt: PointerEvent, d: GraphNode) => {
+			window.location.href = `/posts/${d.id}/`;
+		});
+
+	nodeSel
+		.append("circle")
+		.attr("r", 6)
+		.attr("fill", "var(--color-accent)")
+		.attr("stroke", "var(--color-global-bg)")
+		.attr("stroke-width", 1.5);
+
+	nodeSel
+		.append("text")
+		.text((d: GraphNode) => d.title)
+		.attr("x", 10)
+		.attr("y", 4)
+		.attr("font-size", 12)
+		.attr("fill", "currentColor");
+
+	const sim = d3
+		.forceSimulation(data.nodes as d3.SimulationNodeDatum[])
+		.force(
+			"link",
+			d3
+				.forceLink(data.edges)
+				.id((d: d3.SimulationNodeDatum) => (d as GraphNode).id)
+				.distance(80),
+		)
+		.force("charge", d3.forceManyBody().strength(-200))
+		.force("center", d3.forceCenter(width / 2, height / 2))
+		.force("collide", d3.forceCollide(40))
+		.on("tick", () => {
+			linkSel
+				.attr("x1", (d: GraphEdge) => (d.source as unknown as { x: number }).x)
+				.attr("y1", (d: GraphEdge) => (d.source as unknown as { y: number }).y)
+				.attr("x2", (d: GraphEdge) => (d.target as unknown as { x: number }).x)
+				.attr("y2", (d: GraphEdge) => (d.target as unknown as { y: number }).y);
+			nodeSel.attr(
+				"transform",
+				(d: GraphNode) =>
+					`translate(${(d as unknown as { x: number }).x},${(d as unknown as { y: number }).y})`,
+			);
+		});
+
+	// Drag
+	const drag = d3
+		.drag<SVGGElement, GraphNode>()
+		.on("start", (event, d) => {
+			if (!event.active) sim.alphaTarget(0.3).restart();
+			(d as unknown as { fx: number }).fx = (d as unknown as { x: number }).x;
+			(d as unknown as { fy: number }).fy = (d as unknown as { y: number }).y;
+		})
+		.on("drag", (event, d) => {
+			(d as unknown as { fx: number }).fx = event.x;
+			(d as unknown as { fy: number }).fy = event.y;
+		})
+		.on("end", (event, d) => {
+			if (!event.active) sim.alphaTarget(0);
+			(d as unknown as { fx: number | null }).fx = null;
+			(d as unknown as { fy: number | null }).fy = null;
+		});
+	(nodeSel as d3.Selection<SVGGElement, GraphNode, SVGGElement, unknown>).call(drag);
+
+	// Zoom + pan
+	const zoom = d3
+		.zoom<SVGSVGElement, unknown>()
+		.scaleExtent([0.25, 4])
+		.on("zoom", (event) => {
+			root.attr("transform", event.transform);
+		});
+	svg.call(zoom);
+</script>

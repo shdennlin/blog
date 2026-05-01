@@ -1,0 +1,127 @@
+---
+import { type CollectionEntry, render } from "astro:content";
+
+import Backlinks from "@/components/blog/Backlinks.astro";
+import Giscus from "@/components/blog/Giscus.astro";
+import Masthead from "@/components/blog/Masthead.astro";
+import MiniGraph from "@/components/blog/MiniGraph.astro";
+import PrevNext from "@/components/blog/PrevNext.astro";
+import SeriesNav from "@/components/blog/SeriesNav.astro";
+import TOC from "@/components/blog/TOC.astro";
+import TranslationSwitcher from "@/components/blog/TranslationSwitcher.astro";
+import WebMentions from "@/components/blog/webmentions/index.astro";
+import { getAllPosts } from "@/data/post";
+import { getBacklinks } from "@/lib/backlinks";
+import { getLastGitDate } from "@/lib/git-updated";
+import { getTranslations, langOf } from "@/lib/i18n";
+import { getNeighbors } from "@/lib/post-neighbors";
+import { getSeriesNeighbors } from "@/lib/series";
+import { siteConfig } from "@/site.config";
+
+import BaseLayout from "./Base.astro";
+
+interface Props {
+	post: CollectionEntry<"post">;
+}
+
+const { post } = Astro.props;
+const { ogImage, title, description, publishDate } = post.data;
+const socialImage = ogImage ?? `/og-image/${post.id}.png`;
+
+// Effective `updatedDate`: explicit frontmatter wins; otherwise fall back
+// to git's last commit date for this file. Surfaces real "last touched"
+// without requiring the author to remember to bump frontmatter.
+const gitDate = post.filePath ? getLastGitDate(post.filePath) : undefined;
+const effectiveUpdated =
+	post.data.updatedDate ??
+	(gitDate && gitDate.getTime() > publishDate.getTime() ? gitDate : undefined);
+const articleDate = (effectiveUpdated ?? publishDate).toISOString();
+const { headings, remarkPluginFrontmatter } = await render(post);
+const readingTime: string = remarkPluginFrontmatter.readingTime;
+
+const editFilename = post.filePath?.split("/").slice(-1)[0] ?? `${post.id}.md`;
+const editUrl = `https://github.com/${siteConfig.githubRepo}/edit/main/${siteConfig.contentPath}/${editFilename}`;
+
+const allPosts = await getAllPosts();
+const seriesNeighbors = getSeriesNeighbors(post, allPosts);
+const backlinks = getBacklinks(post.id, allPosts);
+const translations = getTranslations(post, allPosts);
+const pageLang = langOf(post);
+const { prev, next } = getNeighbors(post, allPosts);
+---
+
+<BaseLayout
+	meta={{
+		articleDate,
+		description,
+		ogImage: socialImage,
+		title,
+	}}
+	lang={pageLang}
+>
+	<article class="grow break-words" data-pagefind-body>
+		<div id="blog-hero" class="mb-12">
+			<Masthead content={post} readingTime={readingTime} effectiveUpdated={effectiveUpdated} />
+		</div>
+		<div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+			<aside class="lg:order-2 lg:-me-32 lg:basis-64">
+				<MiniGraph centerId={post.id} posts={allPosts} />
+				{!!headings.length && <TOC headings={headings} />}
+			</aside>
+			<div
+				class="prose prose-sm w-full max-w-none lg:max-w-4xl prose-headings:font-semibold prose-headings:text-accent-2 prose-headings:before:absolute prose-headings:before:-ms-4 prose-headings:before:text-muted prose-headings:hover:before:text-accent sm:prose-headings:before:content-['#'] sm:prose-th:before:content-none"
+			>
+				{translations.length > 0 && <TranslationSwitcher others={translations} />}
+				{seriesNeighbors && <SeriesNav neighbors={seriesNeighbors} />}
+				<slot />
+				<p class="text-muted mt-12 text-xs">
+					<a class="cactus-link" href={editUrl} rel="noopener noreferrer" target="_blank">
+						Edit this page on GitHub
+					</a>
+				</p>
+				<PrevNext prev={prev} next={next} />
+				<Backlinks links={backlinks} />
+				<WebMentions />
+				<Giscus />
+			</div>
+		</div>
+	</article>
+	<button
+		class="hover:border-link fixed end-4 bottom-8 z-90 flex h-10 w-10 translate-y-28 cursor-pointer items-center justify-center rounded-full border-2 border-transparent bg-zinc-200 text-3xl opacity-0 transition-all transition-discrete duration-300 data-[show=true]:translate-y-0 data-[show=true]:opacity-100 sm:end-8 sm:h-12 sm:w-12 dark:bg-zinc-700"
+		data-show="false"
+		id="to-top-btn"
+	>
+		<span class="sr-only">Back to top</span>
+		<svg
+			aria-hidden="true"
+			class="h-6 w-6"
+			fill="none"
+			focusable="false"
+			stroke="currentColor"
+			stroke-width="2"
+			viewBox="0 0 24 24"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path d="M4.5 15.75l7.5-7.5 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+		</svg>
+	</button>
+</BaseLayout>
+
+<script>
+	const scrollBtn = document.getElementById("to-top-btn") as HTMLButtonElement;
+	const targetHeader = document.getElementById("blog-hero") as HTMLDivElement;
+
+	function callback(entries: IntersectionObserverEntry[]) {
+		entries.forEach((entry) => {
+			// only show the scroll to top button when the heading is out of view
+			scrollBtn.dataset.show = (!entry.isIntersecting).toString();
+		});
+	}
+
+	scrollBtn.addEventListener("click", () => {
+		document.documentElement.scrollTo({ behavior: "smooth", top: 0 });
+	});
+
+	const observer = new IntersectionObserver(callback);
+	observer.observe(targetHeader);
+</script>
