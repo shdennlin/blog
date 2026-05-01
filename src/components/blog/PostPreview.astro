@@ -1,0 +1,59 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { HTMLTag, Polymorphic } from "astro/types";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { langLabel } from "@/lib/i18n";
+import { siteConfig } from "@/site.config";
+
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & {
+	post: CollectionEntry<"post">;
+	withDesc?: boolean;
+	withTags?: boolean;
+};
+
+const { as: Tag = "div", post, withDesc = false, withTags = false } = Astro.props;
+
+// URL prefix depends on type. `page` types are addressed directly (/now/, /uses/),
+// everything else nests under its plural collection name.
+const type = post.data.type ?? "post";
+const prefix =
+	type === "note" ? "notes" : type === "project" ? "projects" : type === "page" ? "" : "posts";
+const href = prefix ? `/${prefix}/${post.id}/` : `/${post.id}/`;
+
+// Language label only when the post is in a non-default language. Lets
+// listings show both translations side by side without confusing readers.
+const showLangLabel = Boolean(post.data.lang && post.data.lang !== siteConfig.lang);
+---
+
+<FormattedDate class="text-muted min-w-30 font-semibold" date={post.data.publishDate} />
+<Tag>
+	{!post.data.publish && <span class="text-red-500">(Unpublished) </span>}
+	<a class="cactus-link" href={href}>
+		{post.data.title}
+	</a>
+	{showLangLabel && (
+		<span
+			class="bg-link/10 text-muted ms-2 inline-block rounded-full px-2 py-0.5 align-middle text-xs"
+			title={`Language: ${langLabel(post.data.lang!)}`}
+		>
+			{langLabel(post.data.lang!)}
+		</span>
+	)}
+</Tag>
+{withDesc && post.data.description && <q class="line-clamp-3 italic">{post.data.description}</q>}
+{
+	withTags && post.data.tags.length > 0 && (
+		<ul class="flex flex-wrap gap-x-2 gap-y-1 text-xs sm:col-start-2">
+			{post.data.tags.map((tag) => (
+				<li>
+					<a
+						class="bg-accent/10 hover:bg-accent/20 text-muted hover:text-global-text inline-block rounded-full px-2 py-0.5"
+						href={`/tags/${tag}/`}
+					>
+						#{tag}
+					</a>
+				</li>
+			))}
+		</ul>
+	)
+}

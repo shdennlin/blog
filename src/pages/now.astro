@@ -1,0 +1,38 @@
+---
+import { render } from "astro:content";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { getStaticPage } from "@/data/post";
+import PageLayout from "@/layouts/Base.astro";
+
+const page = await getStaticPage("now");
+const Rendered = page ? (await render(page)).Content : null;
+
+const meta = {
+	description: "What I'm focused on right now (a /now page).",
+	title: "Now",
+};
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-4">Now</h1>
+	<p class="text-muted mb-8 text-sm">
+		What I'm focused on right now.
+		Inspired by <a class="cactus-link" href="https://nownownow.com/about" rel="noreferrer" target="_blank">/now</a>.
+	</p>
+	{
+		Rendered && page ? (
+			<>
+				<div class="prose prose-sm max-w-none">
+					<Rendered />
+				</div>
+				<p class="text-muted mt-12 text-xs">
+					Last updated: <FormattedDate date={page.data.updatedDate ?? page.data.publishDate} />
+				</p>
+			</>
+		) : (
+			<p class="text-muted">
+				Not written yet — add <code>vault/Blog/now.md</code> with <code>type: page</code> and <code>publish: true</code>.
+			</p>
+		)
+	}
+</PageLayout>

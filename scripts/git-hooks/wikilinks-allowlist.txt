@@ -1,0 +1,8 @@
+# Wikilinks that have been manually verified safe to mention publicly.
+# Entries match against the inner text of [[X]] (case-insensitive).
+# One target per line. Lines starting with # are comments.
+#
+# When src/content/post/<file>.md is staged with publish:true and contains
+# only wikilinks listed here, the pre-commit hook stays silent.
+# Any wikilink not in this list (or not exactly matching) triggers a
+# warning so you eyeball the diff.

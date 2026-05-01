@@ -1,0 +1,96 @@
+---
+import BaseHead from "@/components/BaseHead.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Header from "@/components/layout/Header.astro";
+import SkipLink from "@/components/SkipLink.astro";
+import ThemeProvider from "@/components/ThemeProvider.astro";
+import { siteConfig } from "@/site.config";
+import type { SiteMeta } from "@/types";
+
+interface Props {
+	meta: SiteMeta;
+	/** BCP-47 override per page (e.g. a Chinese-language post). */
+	lang?: string | undefined;
+}
+
+const {
+	meta: { articleDate, description = siteConfig.description, ogImage, title },
+	lang: pageLang,
+} = Astro.props;
+---
+
+<html class="scroll-smooth" lang={pageLang ?? siteConfig.lang}>
+	<head>
+		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
+		<ThemeProvider />
+	</head>
+	<body
+		class="bg-global-bg text-global-text flex min-h-screen flex-col overflow-x-clip font-mono text-sm font-normal antialiased"
+	>
+		<SkipLink />
+		<div class="border-special-lighter border-b">
+			<div class="mx-auto w-full max-w-7xl px-4 pt-12 pb-6 sm:px-8 sm:ps-26">
+				<Header />
+			</div>
+		</div>
+		<main id="main" class="mx-auto w-full max-w-7xl grow px-4 pt-12 pb-16 sm:px-8">
+			<slot />
+		</main>
+		<div class="border-special-lighter mt-auto border-t">
+			<div class="mx-auto w-full max-w-7xl px-4 py-6 sm:px-8">
+				<Footer />
+			</div>
+		</div>
+		<script is:inline>
+			// Lazy-load mermaid only when the page actually contains a diagram.
+			// Re-runs on theme toggle so dark/light follows the site theme.
+			(function () {
+				if (!document.querySelector("pre.mermaid")) return;
+				const url = "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+				const themeFor = () =>
+					document.documentElement.dataset.theme === "dark" ? "dark" : "default";
+				const render = (mermaid) => {
+					document.querySelectorAll("pre.mermaid").forEach((el) => {
+						if (el.dataset.processed === "true") {
+							const fresh = document.createElement("pre");
+							fresh.className = "mermaid not-prose";
+							fresh.textContent = el.dataset.source ?? el.textContent ?? "";
+							el.replaceWith(fresh);
+						} else {
+							el.dataset.source = el.textContent ?? "";
+						}
+					});
+					mermaid.initialize({ startOnLoad: false, theme: themeFor() });
+					mermaid.run({ querySelector: "pre.mermaid" });
+				};
+				import(url).then(({ default: mermaid }) => {
+					render(mermaid);
+					new MutationObserver(() => render(mermaid)).observe(document.documentElement, {
+						attributes: true,
+						attributeFilter: ["data-theme"],
+					});
+				});
+			})();
+		</script>
+		<script is:inline type="speculationrules">
+			{
+				"prefetch": [
+					{
+						"where": {
+							"href_matches": "/*"
+						},
+						"eagerness": "immediate"
+					}
+				],
+				"prerender": [
+					{
+						"where": {
+							"href_matches": "/*"
+						},
+						"eagerness": "moderate"
+					}
+				]
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,113 @@
+---
+import type { MarkdownHeading } from "astro";
+import { generateToc } from "@/utils/generateToc";
+import TOCHeading from "./TOCHeading.astro";
+
+interface Props {
+	headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+const toc = generateToc(headings);
+---
+
+{/*
+  Two presentations from one <details>:
+
+  Desktop (lg+): unchanged — sticky right sidebar with scrollable inner.
+
+  Mobile (<lg): the <details> element itself becomes display:contents so
+  it carries no box; <summary> is a fixed circular FAB at bottom-right;
+  <nav> is a fixed full-height drawer slid in from the right. Native
+  click-to-toggle on <summary> drives the open/close state — no JS.
+*/}
+<details
+	class="toc-details max-lg:contents lg:sticky lg:top-12 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pe-2 lg:[&]:open lg:open"
+	open
+>
+	<summary
+		class="hover:marker:text-accent cursor-pointer
+			lg:title lg:bg-global-bg lg:sticky lg:top-0 lg:py-2 lg:text-lg
+			max-lg:bg-accent max-lg:text-global-bg max-lg:fixed max-lg:end-0 max-lg:top-1/2 max-lg:z-50 max-lg:flex max-lg:h-16 max-lg:w-10 max-lg:list-none max-lg:-translate-y-1/2 max-lg:items-center max-lg:justify-center max-lg:rounded-l-full max-lg:opacity-30 max-lg:shadow-lg max-lg:transition-opacity hover:max-lg:opacity-100 max-lg:[&::-webkit-details-marker]:hidden"
+		aria-label="Toggle table of contents"
+	>
+		<span class="max-lg:hidden">Table of Contents</span>
+		<svg
+			class="lg:hidden h-6 w-6"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			aria-hidden="true"
+		>
+			<line x1="8" y1="6" x2="21" y2="6"></line>
+			<line x1="8" y1="12" x2="21" y2="12"></line>
+			<line x1="8" y1="18" x2="21" y2="18"></line>
+			<line x1="3" y1="6" x2="3.01" y2="6"></line>
+			<line x1="3" y1="12" x2="3.01" y2="12"></line>
+			<line x1="3" y1="18" x2="3.01" y2="18"></line>
+		</svg>
+	</summary>
+	<nav
+		class="lg:ms-4 lg:w-full
+			max-lg:bg-global-bg max-lg:fixed max-lg:inset-y-0 max-lg:end-0 max-lg:z-40 max-lg:w-80 max-lg:max-w-[85vw] max-lg:overflow-y-auto max-lg:px-6 max-lg:pt-20 max-lg:pb-12 max-lg:shadow-2xl"
+	>
+		<p class="title mb-4 text-lg max-lg:block lg:hidden">Table of Contents</p>
+		<ol class="lg:mt-4">
+			{toc.map((heading) => <TOCHeading heading={heading} />)}
+		</ol>
+	</nav>
+</details>
+
+{/* Mobile-only: tap-outside backdrop closes the drawer (sets details.open=false) */}
+<div
+	class="bg-global-text/40 max-lg:fixed max-lg:inset-0 max-lg:z-30 max-lg:hidden lg:hidden"
+	id="toc-backdrop"
+	aria-hidden="true"
+></div>
+
+<script is:inline>
+	(() => {
+		const details = document.querySelector("details.toc-details");
+		const backdrop = document.getElementById("toc-backdrop");
+		if (!details || !backdrop) return;
+		const isMobile = () => window.matchMedia("(max-width: 1023px)").matches;
+		const sync = () => {
+			if (!isMobile()) {
+				backdrop.classList.add("max-lg:hidden");
+				return;
+			}
+			if (details.open) backdrop.classList.remove("max-lg:hidden");
+			else backdrop.classList.add("max-lg:hidden");
+		};
+		// Default: closed on mobile, open on desktop
+		details.open = !isMobile();
+		sync();
+		details.addEventListener("toggle", sync);
+		backdrop.addEventListener("click", () => {
+			details.open = false;
+			sync();
+		});
+		// Close drawer when tapping any TOC link
+		details.querySelectorAll("nav a").forEach((a) => {
+			a.addEventListener("click", () => {
+				if (isMobile()) {
+					details.open = false;
+					sync();
+				}
+			});
+		});
+		// Re-evaluate on resize
+		window.addEventListener("resize", sync);
+		// Esc to close
+		document.addEventListener("keydown", (e) => {
+			if (e.key === "Escape" && details.open && isMobile()) {
+				details.open = false;
+				sync();
+			}
+		});
+	})();
+</script>

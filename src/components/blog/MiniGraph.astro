@@ -1,0 +1,77 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { buildMiniGraph } from "@/lib/mini-graph";
+
+interface Props {
+	centerId: string;
+	posts: CollectionEntry<"post">[];
+}
+
+const { centerId, posts } = Astro.props;
+const { nodes, edges, total } = buildMiniGraph(centerId, posts);
+
+// Hide the widget entirely when there's nothing meaningful to show.
+const hasNeighbors = total > 1;
+---
+
+{
+	hasNeighbors && (
+		<div class="mb-6">
+			<details open>
+				<summary class="title hover:marker:text-accent cursor-pointer text-base">
+					Local graph
+				</summary>
+				<div class="mt-3">
+					<svg
+						viewBox="0 0 180 180"
+						class="bg-special-lighter/40 h-auto w-full rounded"
+						aria-label="Local connection graph"
+					>
+						<g stroke="currentColor" stroke-opacity="0.3">
+							{edges.map((e) => (
+								<line
+									x1={e.x1}
+									y1={e.y1}
+									x2={e.x2}
+									y2={e.y2}
+									stroke-width={e.involvesCenter ? 1.5 : 0.6}
+								/>
+							))}
+						</g>
+						<g>
+							{nodes.map((n) =>
+								n.isCenter ? (
+									<g>
+										<circle
+											cx={n.x}
+											cy={n.y}
+											r="6"
+											class="fill-accent"
+											stroke="var(--color-global-bg)"
+											stroke-width="2"
+										/>
+										<title>{n.title} (current)</title>
+									</g>
+								) : (
+									<a href={`/posts/${n.id}/`}>
+										<circle
+											cx={n.x}
+											cy={n.y}
+											r="4.5"
+											class="fill-link hover:fill-accent transition-colors"
+										/>
+										<title>{n.title}</title>
+									</a>
+								),
+							)}
+						</g>
+					</svg>
+					<p class="text-muted mt-2 text-xs">
+						{total - 1} linked {total - 1 === 1 ? "post" : "posts"} ·
+						<a class="cactus-link ms-1" href="/graph/">full graph →</a>
+					</p>
+				</div>
+			</details>
+		</div>
+	)
+}

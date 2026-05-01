@@ -1,0 +1,65 @@
+---
+/**
+ * Giscus comments backed by GitHub Discussions. No third-party DB,
+ * no tracking, no email collection — issues live in the public repo.
+ *
+ * Activation requires four env vars (set in Cloudflare Pages):
+ *   GISCUS_REPO        e.g. shdennlin/blog
+ *   GISCUS_REPO_ID     from https://giscus.app
+ *   GISCUS_CATEGORY    e.g. Comments
+ *   GISCUS_CATEGORY_ID from https://giscus.app
+ *
+ * If any is missing, the component renders nothing (graceful no-op).
+ */
+const repo = import.meta.env.GISCUS_REPO;
+const repoId = import.meta.env.GISCUS_REPO_ID;
+const category = import.meta.env.GISCUS_CATEGORY;
+const categoryId = import.meta.env.GISCUS_CATEGORY_ID;
+const enabled = Boolean(repo && repoId && category && categoryId);
+---
+
+{
+	enabled && (
+		<section class="not-prose mt-16">
+			<h2 class="title mb-4 text-xl">Comments</h2>
+			<script
+				is:inline
+				src="https://giscus.app/client.js"
+				data-repo={repo}
+				data-repo-id={repoId}
+				data-category={category}
+				data-category-id={categoryId}
+				data-mapping="pathname"
+				data-strict="0"
+				data-reactions-enabled="1"
+				data-emit-metadata="0"
+				data-input-position="bottom"
+				data-theme="preferred_color_scheme"
+				data-lang="en"
+				data-loading="lazy"
+				crossorigin="anonymous"
+				async
+			/>
+		</section>
+	)
+}
+
+{/* Re-theme giscus on site theme toggle */}
+<script is:inline>
+	(function () {
+		if (!document.querySelector('script[src="https://giscus.app/client.js"]')) return;
+		const sync = () => {
+			const theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+			const iframe = document.querySelector("iframe.giscus-frame");
+			if (!iframe) return;
+			iframe.contentWindow?.postMessage(
+				{ giscus: { setConfig: { theme } } },
+				"https://giscus.app",
+			);
+		};
+		new MutationObserver(sync).observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ["data-theme"],
+		});
+	})();
+</script>

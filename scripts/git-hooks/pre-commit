@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Pre-commit safety net for the public blog repo.
+# Activate once per clone with:
+#   git config core.hooksPath scripts/git-hooks
+#
+# Checks performed against staged files:
+#   1. Block iCloud / sync conflict copies leaking into the public repo.
+#   2. Warn when a publish:true post contains wikilinks that may point at
+#      private vault notes — the file name itself can be a leak.
+#   3. Block obvious secret patterns (basic safety net, not exhaustive).
+
+set -euo pipefail
+
+red()    { printf "\033[31m%s\033[0m\n" "$1"; }
+yellow() { printf "\033[33m%s\033[0m\n" "$1"; }
+green()  { printf "\033[32m%s\033[0m\n" "$1"; }
+
+staged() {
+  git diff --cached --name-only --diff-filter=ACMR
+}
+
+errors=0
+warnings=0
+
+# 1) iCloud / sync conflict files
+conflict_pattern='( [0-9]+\.md$| \(conflicted [^/]*\)\.md$|\.icloud$|\.DS_Store$|\.synology@.*$)'
+while IFS= read -r f; do
+  if echo "$f" | grep -qE "$conflict_pattern"; then
+    red "BLOCK: looks like a sync conflict / system file: $f"
+    errors=$((errors + 1))
+  fi
+done < <(staged)
+
+# 2) Wikilinks inside publish:true posts: warn only on UN-allowlisted targets.
+#    Verified-safe targets live in scripts/git-hooks/wikilinks-allowlist.txt.
+allowlist_file="scripts/git-hooks/wikilinks-allowlist.txt"
+allowlist=""
+if [[ -f "$allowlist_file" ]]; then
+  # `|| true` keeps `set -e` happy when the file is all-comments (no matches → grep exits 1).
+  allowlist=$(grep -vE '^\s*(#|$)' "$allowlist_file" 2>/dev/null | tr '[:upper:]' '[:lower:]' || true)
+fi
+while IFS= read -r f; do
+  case "$f" in
+    src/content/post/*.md|src/content/post/*.mdx) ;;
+    *) continue ;;
+  esac
+  [[ -f "$f" ]] || continue
+  if ! head -n 30 "$f" | grep -qE '^publish:\s*true\b'; then continue; fi
+  # Extract every [[...]] target (strip alias after |, strip #heading).
+  targets=$(grep -oE '\[\[[^]]+\]\]' "$f" \
+    | sed -E 's/^\[\[([^]|#]+).*\]\]$/\1/' \
+    | tr '[:upper:]' '[:lower:]' \
+    | sort -u || true)
+  for t in $targets; do
+    if [[ -z "$allowlist" ]] || ! grep -qxF "$t" <<<"$allowlist"; then
+      yellow "WARN: $f references [[$t]] which is not in $allowlist_file."
+      yellow "      Confirm it isn't a private vault note, then add it to the allowlist."
+      warnings=$((warnings + 1))
+    fi
+  done
+done < <(staged)
+
+# 3) Obvious secrets (super crude — not a substitute for proper scanning)
+secret_pattern='(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|sk-[A-Za-z0-9]{20,}|-----BEGIN (RSA|OPENSSH) PRIVATE KEY-----)'
+while IFS= read -r f; do
+  [[ -f "$f" ]] || continue
+  if git diff --cached -- "$f" | grep -qE "$secret_pattern"; then
+    red "BLOCK: possible secret in $f"
+    errors=$((errors + 1))
+  fi
+done < <(staged)
+
+if [[ $errors -gt 0 ]]; then
+  red "Pre-commit blocked: $errors error(s)."
+  exit 1
+fi
+if [[ $warnings -gt 0 ]]; then
+  yellow "Pre-commit passed with $warnings warning(s) — review them above."
+fi
+green "Pre-commit OK"

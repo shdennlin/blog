@@ -1,0 +1,30 @@
+---
+import { getAllPosts } from "@/data/post";
+import PageLayout from "@/layouts/Base.astro";
+import { groupBySeries, seriesSlug } from "@/lib/series";
+
+const posts = await getAllPosts();
+const groups = [...groupBySeries(posts).entries()].sort((a, b) => a[0].localeCompare(b[0]));
+
+const meta = {
+	description: "All multi-part series.",
+	title: "Series",
+};
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-8">Series</h1>
+	{groups.length === 0 && <p class="text-muted">No series yet.</p>}
+	<ul class="space-y-6">
+		{
+			groups.map(([name, list]) => (
+				<li>
+					<a class="cactus-link text-lg font-semibold" href={`/series/${seriesSlug(name)}/`}>
+						{name}
+					</a>
+					<span class="text-muted text-sm"> · {list.length} parts</span>
+				</li>
+			))
+		}
+	</ul>
+</PageLayout>

@@ -1,0 +1,27 @@
+---
+import type { BacklinkEntry } from "@/lib/backlinks";
+
+interface Props {
+	links: BacklinkEntry[];
+}
+
+const { links } = Astro.props;
+---
+
+{
+	links.length > 0 && (
+		<section class="not-prose mt-12">
+			<h2 class="title mb-4 text-xl">Linked from</h2>
+			<ul class="space-y-2">
+				{links.map((l) => (
+					<li>
+						<a class="cactus-link" href={`/posts/${l.id}/`}>
+							{l.title}
+						</a>
+						{l.description && <span class="text-muted text-sm"> — {l.description}</span>}
+					</li>
+				))}
+			</ul>
+		</section>
+	)
+}
