@@ -64,7 +64,7 @@ const { prev, next } = getNeighbors(post, allPosts);
 			<Masthead content={post} readingTime={readingTime} effectiveUpdated={effectiveUpdated} />
 		</div>
 		<div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
-			<aside class="lg:order-2 lg:-me-32 lg:basis-64">
+			<aside class="min-w-0 lg:order-2 lg:basis-56 lg:shrink-0 xl:basis-64">
 				<div class="hidden lg:block">
 					<MiniGraph centerId={post.id} posts={allPosts} />
 				</div>

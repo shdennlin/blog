@@ -82,9 +82,10 @@ const hasNeighbors = total > 1;
 								)}
 							</g>
 						</svg>
-						<p class="text-muted mt-2 text-xs">
-							{total - 1} linked {total - 1 === 1 ? "page" : "pages"} ·
-							<a class="cactus-link ms-1" href="/graph/">full graph →</a>
+						<p class="text-muted mt-2 text-xs leading-relaxed">
+							<span>{total - 1} linked {total - 1 === 1 ? "page" : "pages"}</span>
+							<span class="mx-1">·</span>
+							<a class="cactus-link" href="/graph/">full graph →</a>
 						</p>
 						<ul class="mt-2 space-y-1 text-xs" aria-label="Local graph pages">
 							{
