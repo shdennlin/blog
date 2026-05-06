@@ -34,7 +34,10 @@ export default function remarkVaultImages() {
 		const sourcePath = file.path ?? file.history?.[file.history.length - 1];
 		if (!sourcePath) return;
 		const sourceDir = dirname(sourcePath);
-		const slug = basename(sourcePath, extname(sourcePath));
+		// Folder-style posts (`<slug>/index.md`) take their slug from the parent dir
+		// so the public URL matches Astro's route. Flat posts use the file basename.
+		const baseName = basename(sourcePath, extname(sourcePath));
+		const slug = baseName === "index" ? basename(sourceDir) : baseName;
 
 		visit(tree, "paragraph", (para: Paragraph, paraIndex, paraParent) => {
 			if (!paraParent || paraIndex === undefined) return;

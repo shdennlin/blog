@@ -13,7 +13,14 @@ const baseSchema = z.object({
 });
 
 const post = defineCollection({
-	loader: glob({ base: "./src/content/post", pattern: "**/*.{md,mdx}" }),
+	loader: glob({
+		base: "./src/content/post",
+		pattern: "**/*.{md,mdx}",
+		// Folder-style posts use `<slug>/index.md`; strip the trailing `/index` so the
+		// route stays `/posts/<slug>/` instead of `/posts/<slug>/index/`. Flat posts
+		// (e.g. `dotfiles.md`) are unaffected — the regex only matches `/index.md` suffixes.
+		generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, "").replace(/\.(md|mdx)$/, ""),
+	}),
 	schema: ({ image }) =>
 		baseSchema.extend({
 			description: z.string(),
