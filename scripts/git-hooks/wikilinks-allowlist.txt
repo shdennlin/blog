@@ -6,3 +6,5 @@
 # only wikilinks listed here, the pre-commit hook stays silent.
 # Any wikilink not in this list (or not exactly matching) triggers a
 # warning so you eyeball the diff.
+
+ccstatusline.png
