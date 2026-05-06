@@ -3,7 +3,9 @@ import { getAllPosts } from "@/data/post";
 import { siteConfig } from "@/site.config";
 
 export const GET = async () => {
-	const posts = await getAllPosts();
+	const posts = (await getAllPosts()).filter(
+		(p) => p.data.type !== "page" && !p.id.startsWith("_"),
+	);
 
 	return rss({
 		title: siteConfig.title,

@@ -11,9 +11,9 @@ function xmlEscape(s: string): string {
 }
 
 export const GET = async () => {
-	const posts = (await getAllPosts()).sort(
-		(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
-	);
+	const posts = (await getAllPosts())
+		.filter((p) => p.data.type !== "page" && !p.id.startsWith("_"))
+		.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 	const updated = posts[0]?.data.updatedDate ?? posts[0]?.data.publishDate ?? new Date();
 	const site = siteConfig.url.replace(/\/$/, "");
 
