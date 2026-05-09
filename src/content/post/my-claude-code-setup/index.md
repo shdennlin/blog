@@ -2,37 +2,39 @@
 title: My Claude Code setup
 description: A snapshot of the plugins, hooks, and status line I use to extend Claude Code.
 publish: true
-publishDate: 2026-05-02
+publishDate: 2026-05-09
 type: note
-tags: [ai, claude-code, tools]
+tags:
+  - ai
+  - claude-code
+  - tools
 status: growing
 created: 2026-05-02 04:00:04
-updated: 2026-05-07 00:17:57
+updated: 2026-05-09 19:45:59
 ---
 
-This is a snapshot of how I currently extend [Claude Code](https://www.anthropic.com/claude-code) — plugins, hooks, and the status line.
+This is a snapshot of how I currently extend [Claude Code](https://www.anthropic.com/claude-code) — plugins, hooks, the status line, and the workflow patterns I rely on day to day.
 
 The goal is not to install every tool I can find. I want a setup that makes Claude Code better at five things: finding context, following repeatable development workflows, reviewing its own work, coordinating with other agents, and staying visible while it works.
 
 ## Documentation and code intelligence
 
-- `context7` for up-to-date documentation lookup.
+- [`context7`](https://github.com/anthropics/claude-plugins-official/tree/main/context7) for up-to-date documentation lookup against current library versions.
 - `typescript-lsp`, `pyright-lsp`, `gopls-lsp`, and `swift-lsp` for language server support.
 
 ## Development workflow
 
-- `feature-dev` for structured feature development.
-- `code-review` for automated review with specialized agents.
-- `code-simplifier` for simplifying code while preserving behavior.
-- `superpowers` for stronger TDD, debugging, and collaboration workflows.
+- [`feature-dev`](https://github.com/anthropics/claude-plugins-official/tree/main/feature-dev) for the `code-architect` and `code-explorer` subagents I lean on during early architecture work. The plugin ships zero auto-triggering skills, so it stays out of the way until I explicitly call those agents.
+- [`code-review`](https://github.com/anthropics/claude-plugins-official/tree/main/code-review) for ad-hoc code reviews via the `/code-review` slash command, separate from the deeper review loops below.
+- [`superpowers`](https://github.com/obra/superpowers) for TDD discipline, systematic debugging, and the verification/review skills I rely on most. Paired with my own routing rules — see [Shaping skill behavior](#shaping-skill-behavior-with-rules) below.
 
 ## My own plugins
 
 - `git-workflow` for repeatable Git operations and Conventional Commits.
 - `mermaid-validator` for checking Mermaid diagrams in Markdown.
-- `reviewer` for spec and implementation review loops.
+- `reviewer` for spec and implementation review loops, with `--parallel` multi-angle review and a `--fix` iteration mode.
 - `digest` for summarizing branches, PRs, diffs, and design docs.
-- `ralph-loop` for experimental long-running agent loops.
+- `ralph-loop` for experimental long-running agent loops — used most often to wrap `reviewer` for iterative review-fix-review cycles (see [Workflow patterns](#workflow-patterns) below).
 
 These live in my [agent-plugins](/projects/agent-plugins/) project.
 
@@ -42,10 +44,67 @@ These live in my [agent-plugins](/projects/agent-plugins/) project.
 
 ## Cross-agent and behavior shaping
 
-- `codex` for delegating work from Claude Code to Codex.
-- `andrej-karpathy-skills` for reducing common LLM coding mistakes.
-- `security-guidance` for reminders about risky code edits.
-- `explanatory-output-style` for more educational implementation explanations.
+- [`codex`](https://github.com/openai/codex-plugin-cc) for delegating work from Claude Code to Codex. I use it selectively — second-opinion spec review and rescue runs, not every code change.
+- [`andrej-karpathy-skills`](https://github.com/forrestchang/andrej-karpathy-skills) for reducing common LLM coding mistakes (over-engineering, untested assumptions, missing success criteria).
+- [`security-guidance`](https://github.com/anthropics/claude-plugins-official/tree/main/security-guidance) for reminders about risky code edits.
+- [`explanatory-output-style`](https://github.com/anthropics/claude-plugins-official/tree/main/explanatory-output-style) for more educational implementation explanations.
+
+## Workflow patterns
+
+Beyond the plugin list, a few patterns I rely on:
+
+- **Spec-driven development as the default.** [Spectra](https://github.com/kaochenlong/Spectra) drives my workflow through `/spectra-discuss` → `/spectra-propose` → `/spectra-apply` → `/spectra-archive`. In-progress changes live in `openspec/changes/`; consolidated truth lives in `openspec/specs/`.
+- **Ralph Loop for iterative review.** I wrap `/reviewer:spec` or `/reviewer:result` inside `/ralph-loop:ralph-loop` so the review-fix-review cycle keeps running until severity gates clear. MEDIUM is treated as a blocker, not as LOW.
+- **Two-engine spec review for high-stakes specs.** For architectural or security-sensitive specs I dispatch two reviewers in parallel — Claude in this session and Codex via `codex:rescue` — then categorize findings as `Only Claude saw`, `Only Codex saw`, or `Both saw`. The reviewer plugin stays model-agnostic; the composition happens in a Raycast snippet, not in plugin code. The exact recipe lives in the [reviewer README](https://github.com/shdennlin/agent-plugins/blob/main/plugins/reviewer/README.md).
+- **Result review uses one engine.** Spec errors propagate to all downstream implementation; result errors are localized. Multi-model review pays off on specs (1-3 dispatches per change, high error cost) but rarely on results (10+ iterations via ralph-loop, lower marginal value). Codex on result review is reserved for security-sensitive, concurrency, or performance-hotpath code.
+
+## Shaping skill behavior with rules
+
+`~/.claude/rules/skill-routing.md` is a user-instruction layer that overrides plugin-defined skill behavior. It is deliberately small — only three rules, each fixing a specific failure mode that Claude wouldn't avoid on its own:
+
+- **Spectra-vs-superpowers routing.** In Spectra repos, prefer `spectra-discuss` / `spectra-debug` over the equivalent superpowers skills, so design and debugging stay tied to Spectra's artifacts.
+- **Suppress `superpowers:brainstorming` auto-writing design docs.** The design discussion belongs in conversation; file output is friction.
+- **Force-trigger `superpowers:verification-before-completion` and `superpowers:receiving-code-review`.** These are the two skills with the highest ROI — they keep "I claimed it was done" and "I blindly chased a reviewer suggestion" from happening.
+
+Workflow sequencing (`discuss → propose → apply → archive`) is not in the rules — that's personal habit, not something Claude needs to enforce. User instructions outrank plugin-defined skill behavior, so superpowers stays installed (and gets upstream updates) while its rough edges get sanded down at user-instruction priority.
+
+<details>
+<summary>Full <code>~/.claude/rules/skill-routing.md</code></summary>
+
+````markdown
+# Skill Routing & Behavior Overrides
+
+These rules override default skill behavior. **User instructions > superpowers skills > defaults**, so this file wins on conflict.
+
+## 1. Spectra-vs-superpowers routing
+
+In Spectra repos (`openspec/` exists at git root), prefer Spectra skills over superpowers equivalents — `spectra-discuss` over `superpowers:brainstorming`, `spectra-debug` over `superpowers:systematic-debugging`. Routing the request to superpowers bypasses Spectra's artifact tracking.
+
+In non-Spectra repos this rule does not apply — superpowers wins because Spectra skills won't trigger anyway.
+
+## 2. Behavior overrides on superpowers skills
+
+### `superpowers:brainstorming`
+- Do NOT automatically write `docs/superpowers/specs/YYYY-MM-DD-*-design.md` or any design doc file. Present the design in conversation only.
+- Skip the "Write design doc" checklist step (step 6 in the SKILL).
+- **Why**: I prefer in-conversation design discussion. File output is friction.
+
+### `superpowers:using-superpowers`
+- Do NOT add a TodoWrite todo per skill checklist item unless the task has 4+ genuinely independent sub-tasks.
+- **Why**: TodoWrite spam clutters short tasks.
+
+## 3. Force-trigger these superpowers skills
+
+### `superpowers:verification-before-completion` ⭐ MANDATORY
+- Trigger before claiming work is "done", "fixed", "passing", "ready", or before a commit / PR.
+- Run the verification command (test, build, manual check) and paste the output. No verification = no claim of completion.
+
+### `superpowers:receiving-code-review` ⭐ MANDATORY
+- Trigger when applying review feedback from any review-fix loop (`reviewer:result-fixer`, `reviewer:spec-fixer`, `/codex:review`, etc.).
+- For each review item, first verify the claim is technically correct. Push back with evidence on wrong/unnecessary suggestions instead of blindly implementing.
+````
+
+</details>
 
 ## Status line
 
