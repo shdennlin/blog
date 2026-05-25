@@ -7,7 +7,7 @@ type: page
 tags: [meta]
 status: growing
 created: 2026-05-02 03:10:49
-updated: 2026-05-02 03:34:35
+updated: 2026-05-25
 ---
 
 This is what I am focused on right now. I update this page when my focus changes, not on a fixed schedule.
@@ -25,6 +25,7 @@ I am strengthening my fundamentals in data structures and algorithms while conti
 - PVE / homelab setup for local infrastructure experiments
 - A financial analysis tool for comparing personal strategies against the market
 - A visualization tool for project-manager issue dependencies
+- [whisper-wrap](https://github.com/shdennlin/whisper-wrap), a FastAPI wrapper around `whisper.cpp` with iOS Shortcuts integration
 - AI agent skill development and reusable agent workflows
 
 Some of these may turn into future writeups once they are stable enough to explain clearly.
