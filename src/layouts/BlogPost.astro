@@ -7,6 +7,7 @@ import Masthead from "@/components/blog/Masthead.astro";
 import MiniGraph from "@/components/blog/MiniGraph.astro";
 import PrevNext from "@/components/blog/PrevNext.astro";
 import SeriesNav from "@/components/blog/SeriesNav.astro";
+import SupportMe from "@/components/blog/SupportMe.astro";
 import TOC from "@/components/blog/TOC.astro";
 import TranslationSwitcher from "@/components/blog/TranslationSwitcher.astro";
 import WebMentions from "@/components/blog/webmentions/index.astro";
@@ -81,6 +82,7 @@ const { prev, next } = getNeighbors(post, allPosts);
 						Edit this page on GitHub
 					</a>
 				</p>
+				<SupportMe />
 				<PrevNext prev={prev} next={next} />
 				<Backlinks links={backlinks} />
 				<WebMentions />

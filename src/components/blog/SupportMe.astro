@@ -1,0 +1,61 @@
+---
+// End-of-post support block. Plain links on purpose: no third-party script,
+// no layout shift. The Ko-fi badge is the official, unmodified brand asset;
+// the Buy Me a Coffee button mimics the look of its official widget
+// (Cookie font, colour emoji) with the font self-hosted via @fontsource.
+import "@fontsource/cookie/latin-400.css";
+
+interface Props {
+	message?: string;
+}
+
+const {
+	message = "If this post saved you some time, you can support my writing and open-source work.",
+} = Astro.props;
+
+const kofiUrl = "https://ko-fi.com/shdennlin";
+const bmcUrl = "https://buymeacoffee.com/shdennlin";
+---
+
+<aside
+	aria-labelledby="support-me-heading"
+	class="not-prose border-muted/30 mt-12 flex flex-col items-start gap-3 border-t pt-6"
+>
+	<p id="support-me-heading" class="text-muted text-sm">
+		{message}
+	</p>
+	<div class="flex flex-wrap items-center gap-3">
+		<a href={kofiUrl} rel="noopener noreferrer" target="_blank">
+			<img
+				alt="Support me on Ko-fi"
+				class="h-10 w-auto"
+				height="40"
+				loading="lazy"
+				src="/support/support_me_on_kofi_blue.png"
+				width="198"
+			/>
+		</a>
+		<a
+			class="bmc-button inline-flex h-10 items-center gap-2 rounded-lg bg-[#5F7FFF] px-5 text-white no-underline hover:opacity-90"
+			href={bmcUrl}
+			rel="noopener noreferrer"
+			target="_blank"
+		>
+			<span aria-hidden="true" class="bmc-emoji">&#x2615;&#xFE0F;</span>
+			<span class="bmc-text">Buy me a coffee</span>
+		</a>
+	</div>
+</aside>
+
+<style>
+	.bmc-text {
+		font-family: "Cookie", cursive;
+		font-size: 1.4rem;
+		line-height: 1;
+	}
+	.bmc-emoji {
+		font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+		font-size: 1.15rem;
+		line-height: 1;
+	}
+</style>
