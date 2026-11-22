@@ -10,7 +10,7 @@ tags:
   - tools
 status: growing
 created: 2026-05-02 04:00:04
-updated: 2026-08-01 17:37:52
+updated: 2026-11-22 15:27:47
 ---
 
 This is a snapshot of how I currently extend [Claude Code](https://www.anthropic.com/claude-code) — plugins, hooks, the status line, and the workflow patterns I rely on day to day.
@@ -25,19 +25,19 @@ The goal is not to install every tool I can find. I want a setup that makes Clau
 ## Development workflow
 
 - [`feature-dev`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/feature-dev) for the `code-architect` and `code-explorer` subagents I lean on during early architecture work. It is installed but switched off by default; I turn it on when I want those agents.
+- [`frontend-design`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design) for UI work, so the interface is not a generic template.
 - [`code-review`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) for ad-hoc code reviews via the `/code-review` slash command, separate from the deeper review loops below. `reviewer` can also use it as a second engine.
 - [`superpowers`](https://github.com/obra/superpowers) for TDD discipline, systematic debugging, and the verification/review skills I rely on most. Paired with my own routing rules — see [Shaping skill behavior](#shaping-skill-behavior-with-rules) below.
 
 ## My own plugins
 
-- `git-workflow` for repeatable Git operations and Conventional Commits, mainly `/git-workflow:commit`.
 - `mermaid-validator` for checking Mermaid diagrams in Markdown with `/mermaid-validator:check`.
 - `reviewer` for spec and implementation review loops: `/reviewer:spec` before implementation, `/reviewer:result` after it, and `/reviewer:spec-dual` to cross-check a spec with Claude and Codex. Result review is multi-angle by default, and `--fix` runs the fix iterations.
 - `digest` for summarizing branches, PRs, diffs, and design docs with `/digest:digest`.
 - `discuss` for framing a decision before building: `/discuss:discuss` sizes the decision, then lists assumptions, ranks hypotheses, or interviews me, and converges on an explicit choice.
 - `prompt-builder` for turning a messy session or a rough multi-task request into one paste-ready prompt that survives a rewind, with `/prompt-builder:build`.
 
-`git-workflow`, `reviewer`, and `digest` have more commands than the ones above; the full list is in the [agent-plugins README](https://github.com/shdennlin/agent-plugins#readme).
+`reviewer` and `digest` have more commands than the ones above; the full list is in the [agent-plugins README](https://github.com/shdennlin/agent-plugins#readme).
 
 A few of them are hook modules, TypeScript hooks that run inside Claude Code 2.1.289 or later, so they change the interface itself:
 
@@ -51,8 +51,11 @@ These live in my [agent-plugins](/projects/agent-plugins/) project.
 
 - [`session-notifier`](https://github.com/shdennlin/claude-hooks-notifier) for Telegram and macOS notifications on Claude Code hook events — useful when a long-running agent stops and needs me back at the keyboard.
 - [`rtk hook claude`](https://github.com/rtk-ai/rtk) on `PreToolUse`, a token-optimized CLI proxy that rewrites shell commands so their output costs fewer tokens.
-- `ccstatusline --hook` on `PreToolUse`, `UserPromptSubmit`, and `Stop`, which feeds the status line's skill widget (see [Status line](#status-line)).
-- A small hook that reports whether an agent is waiting on me to [cmux](https://github.com/manaflow-ai/cmux), the terminal I run Claude Code in.
+- `ccstatusline --hook` on `PreToolUse` (Skill matcher), `UserPromptSubmit`, and `Stop`.
+- `collie beacon emit` on `SessionStart`, `UserPromptSubmit`, `Stop`, `Notification`, and `SessionEnd`, a beacon from my collie tooling.
+- A `jq` command on `SessionEnd` that copies `claude --resume <session id>` to the clipboard, so I can pick the session up later.
+- `herdr-session-label` on `SessionStart` and `SessionEnd`. It labels the [Herdr](#terminal-herdr) terminal with the Claude session id, and drops the label when a session ends on purpose, so the resume banner does not offer it.
+- `herdr-subagent-hook` on `SubagentStart` and `SubagentStop`. It records Claude's built-in sub agents per Herdr terminal so the sidebar can list them. It stores only the agent type, never the prompt.
 
 ## Cross-agent and behavior shaping
 
@@ -90,11 +93,12 @@ Beyond the plugin list, a few patterns I rely on:
 
 ## Shaping skill behavior with rules
 
-`~/.claude/rules/skill-routing.md` is a user-instruction layer that overrides plugin-defined skill behavior. It is deliberately small — only three rules, each fixing a specific failure mode that Claude wouldn't avoid on its own:
+`~/.claude/rules/skill-routing.md` is a user-instruction layer that overrides plugin-defined skill behavior. It is deliberately small: three rules for skill behavior, and one for agent messaging. Each fixes a specific failure mode that Claude wouldn't avoid on its own:
 
 - **Spectra-vs-superpowers routing.** In Spectra repos, prefer `spectra-discuss` / `spectra-debug` over the equivalent superpowers skills, so design and debugging stay tied to Spectra's artifacts.
 - **Suppress `superpowers:brainstorming` auto-writing design docs.** The design discussion belongs in conversation; file output is friction.
 - **Force-trigger `superpowers:verification-before-completion` and `superpowers:receiving-code-review`.** These are the two skills with the highest ROI — they keep "I claimed it was done" and "I blindly chased a reviewer suggestion" from happening.
+- **Agent messaging.** Prefer the built-in `SendMessage` over `collie walky send`, and use collie only for a target that is not in `ListAgents`.
 
 Workflow sequencing (`discuss → propose → apply → archive`) is not in the rules — that's personal habit, not something Claude needs to enforce. User instructions outrank plugin-defined skill behavior, so superpowers stays installed (and gets upstream updates) while its rough edges get sanded down at user-instruction priority.
 
@@ -132,85 +136,42 @@ In non-Spectra repos this rule does not apply — superpowers wins because Spect
 ### `superpowers:receiving-code-review` ⭐ MANDATORY
 - Trigger when applying review feedback from any review-fix loop (`reviewer:result-fixer`, `reviewer:spec-fixer`, `/codex:review`, etc.).
 - For each review item, first verify the claim is technically correct. Push back with evidence on wrong/unnecessary suggestions instead of blindly implementing.
+
+## 4. Agent messaging
+
+- Prefer built-in `SendMessage` (target from `ListAgents`) over `collie walky send`.
+- Use collie only for a target not in `ListAgents`, or to reply to a collie message.
 ````
 
 </details>
 
+## Terminal: Herdr
+
+I run Claude Code in [Herdr](https://github.com/herdrdev/herdr-app), a macOS desktop app that puts coding-agent terminals in spaces and tabs, with a sidebar that lists the agents and a status bar. The two hooks above are how Claude sessions connect to Herdr terminals.
+
+My Herdr config is public in [herdr-config](https://github.com/shdennlin/herdr-config): an example layout, a keymap, and a small status-bar mod. The optional Spectra mods are in its `contrib/` folder. Its README has the setup steps and the dependency table.
+
 ## Status line
 
-[`ccstatusline`](https://github.com/sirmalloc/ccstatusline) drives a two-line status bar:
+[`ccstatusline`](https://github.com/sirmalloc/ccstatusline) draws one line at the bottom of Claude Code. Claude Code's own `statusLine` entry runs it with `refreshInterval` set to 30 seconds, so the context and cache numbers keep moving while I am idle.
 
-1. **Project and Claude** — current directory (via the [`showdir`](#showdir-helper) helper below), git branch with ahead/behind and change counts, worktree, model and thinking effort, Claude Code version, and a red alert that only appears when status.claude.com says Claude Code is not operational. The alert comes from a small script, `claude-status-alert`, that prints nothing when everything is healthy, so the segment stays hidden.
-2. **Context, cache, and cost** — context-window percentage, prompt-cache hit rate with the [`cache-keepalive`](#my-own-plugins) widget next to it, a compaction counter (hidden at zero), 5-hour usage with its reset timer, weekly usage, session cost and duration, a short session ID, and the active skill.
+From left to right:
 
-Claude Code's own `statusLine` entry runs `ccstatusline` with `refreshInterval` set to 30 seconds, so the clock and usage keep moving while I am idle.
+- **Project:** the current directory (via the [`showdir`](#showdir-helper) helper below), git branch with ahead/behind and change counts, and a 🌿 marker with the worktree name when I am in a linked worktree.
+- **Model:** the model name and effort level (`L`, `M`, `H`, `X`, or `Mx`).
+- **Context:** the context-window percentage.
+- **Cache:** the prompt-cache hit rate, followed by the [`cache-keepalive`](#my-own-plugins) widget.
+- **Version:** the Claude Code version.
+- **Session:** the first 8 characters of the session id.
+- **Usage writer:** a custom command, with no visible text, that stores the 5-hour and weekly rate limits from each status-line update in `~/.cache/claude-rate-limits.json`, plus a history file. The Herdr usage widget reads the cache, so usage shows in the Herdr bar instead of this line.
 
 ![[ccstatusline.png]]
 
-The third line in the screenshot (`INSERT`, `auto mode`, the agent count) is Claude Code's own footer, not part of `ccstatusline`.
+The second line in the screenshot (`INSERT`, `auto mode`, the agent count) is Claude Code's own footer, not part of `ccstatusline`.
 
-<details>
-<summary>Full <code>~/.config/ccstatusline/settings.json</code></summary>
+Earlier versions of this line were two rows and showed the 5-hour and weekly usage with reset timers, session cost, a compaction counter, the active skill, and a status-page alert. Usage now lives in Herdr, and the other widgets are gone.
 
-```json
-{
-  "version": 4,
-  "lines": [
-    [
-      { "type": "custom-command", "commandPath": "showdir --icon" },
-      { "type": "separator", "character": " │ " },
-      { "type": "git-branch", "color": "brightGreen" },
-      { "type": "custom-text", "customText": " " },
-      { "type": "git-ahead-behind", "color": "brightYellow", "metadata": { "hide": "no-upstream" } },
-      { "type": "custom-text", "customText": " " },
-      { "type": "git-changes", "color": "brightYellow" },
-      { "type": "separator", "character": " │ " },
-      { "type": "git-worktree", "color": "blue" },
-      { "type": "separator", "character": " │ " },
-      { "type": "model", "color": "brightMagenta", "rawValue": true, "bold": true },
-      { "type": "custom-text", "customText": " · ", "color": "brightBlack" },
-      { "type": "thinking-effort", "color": "white", "rawValue": true },
-      { "type": "separator", "character": " │ " },
-      { "type": "version", "color": "brightBlue", "bold": true },
-      { "type": "separator", "character": " │ " },
-      { "type": "custom-command", "color": "brightRed", "bold": true, "commandPath": "~/.local/bin/claude-status-alert" }
-    ],
-    [
-      { "type": "custom-text", "customText": "ctx ", "color": "brightGreen" },
-      { "type": "context-percentage", "color": "brightGreen", "rawValue": true },
-      { "type": "separator", "character": " │ " },
-      { "type": "custom-text", "customText": "cache ", "color": "yellow" },
-      { "type": "cache-hit-rate", "color": "yellow", "rawValue": true, "metadata": { "hide": "empty" } },
-      { "type": "custom-command", "color": "yellow", "commandPath": "<agent-plugins>/plugins/cache-keepalive/bin/keepalive-cache --ttl 3600" },
-      { "type": "separator", "character": " │ " },
-      { "type": "compaction-counter", "color": "brightRed", "metadata": { "format": "icon-space-number", "nerdFont": "true", "hide": "zero" } },
-      { "type": "separator", "character": " │ " },
-      { "type": "custom-text", "customText": "5h ", "color": "brightCyan" },
-      { "type": "session-usage", "color": "brightCyan", "rawValue": true },
-      { "type": "custom-text", "customText": " ↻", "color": "brightCyan" },
-      { "type": "reset-timer", "color": "brightCyan", "rawValue": true, "metadata": { "display": "time", "compact": "true" } },
-      { "type": "separator", "character": " │ " },
-      { "type": "custom-text", "customText": "wk ", "color": "brightBlue" },
-      { "type": "weekly-usage", "color": "brightBlue", "rawValue": true },
-      { "type": "separator", "character": " │ " },
-      { "type": "session-cost", "color": "brightWhite", "rawValue": true },
-      { "type": "custom-text", "customText": "·", "color": "brightBlack" },
-      { "type": "session-clock", "color": "brightWhite", "rawValue": true },
-      { "type": "separator", "character": " │ " },
-      { "type": "custom-command", "color": "cyan", "commandPath": "jq -r '.session_id[0:8]'" },
-      { "type": "separator", "character": " │ " },
-      { "type": "skills", "color": "brightCyan", "metadata": { "hide": "empty" } }
-    ]
-  ],
-  "flexMode": "full",
-  "compactThreshold": 60,
-  "colorLevel": 3
-}
-```
-
-I omitted the per-widget `id` UUIDs and the defaulted fields for readability, and shortened two paths (`<agent-plugins>` is wherever the plugin is checked out); `ccstatusline` regenerates the IDs on first save.
-
-</details>
+The two inline widgets (worktree and usage writer) are shell one-liners, so the full `settings.json` is long. The structure above is the whole config. The exact file, with my `agent-plugins` path replaced by a placeholder, is in [herdr-config](https://github.com/shdennlin/herdr-config/blob/main/ccstatusline/settings.json) along with the `showdir` helper. It is a snapshot, not a live copy, so it can lag behind my own config.
 
 ### `showdir` helper
 
